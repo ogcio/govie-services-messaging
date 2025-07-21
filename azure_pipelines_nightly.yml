@@ -27,20 +27,18 @@ stages:
       displayName: Run regression tests - ${{ serviceName }}
       pool: Openshift
       jobs:
-        - template: test/regression_test.yml@pipeline-templates
+        - template: test/pnpm_regression_test.yml@pipeline-templates
           parameters:
             serviceName: ${{ serviceName }}
             testPath: './apps/'
-            nodeVersion: '22.x'
       condition: succeededOrFailed()
     - stage: Performance_Tests_${{ replace(serviceName, '-', '_') }}
       displayName: Run non functional tests - ${{ serviceName }}
       pool: Openshift
       jobs:
-        - template: test/non_functional_test.yml@pipeline-templates
+        - template: test/pnpm_non_functional_test.yml@pipeline-templates
           parameters:
             serviceName: ${{ serviceName }}
             testPath: './apps/'
-            nodeVersion: '22.x'
       condition: succeededOrFailed()
 
