@@ -136,7 +136,7 @@ importers:
         specifier: ^6.4.17
         version: 6.4.17
       '@types/pg':
-        specifier: ^8.11.11
+        specifier: ^8.15.4
         version: 8.15.4
       '@usebruno/cli':
         specifier: ^1.38.3
