@@ -51,7 +51,7 @@ importers:
         specifier: ^3.848.0
         version: 3.848.0
       '@cacheable/node-cache':
-        specifier: ^1.5.8
+        specifier: ^1.6.0
         version: 1.6.0
       '@fastify/autoload':
         specifier: ^6.1.0

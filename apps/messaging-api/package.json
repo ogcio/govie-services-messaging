@@ -34,7 +34,7 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-sns": "^3.848.0",
-    "@cacheable/node-cache": "^1.5.8",
+    "@cacheable/node-cache": "^1.6.0",
     "@fastify/autoload": "^6.1.0",
     "@fastify/env": "^5.0.2",
     "@fastify/postgres": "^6.0.2",
