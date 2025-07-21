@@ -141,3 +141,9 @@ vite.config.ts.timestamp-*
 
 # Bearer security
 bearer-scan-report.html
+
+# From messaging-api
+.tap
+e2e/test-results/
+results.xml
+test_reports/
