@@ -54,7 +54,7 @@ importers:
         specifier: ^1.6.0
         version: 1.6.0
       '@fastify/autoload':
-        specifier: ^6.1.0
+        specifier: ^6.3.1
         version: 6.3.1
       '@fastify/env':
         specifier: ^5.0.2
@@ -66,10 +66,10 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       '@fastify/swagger':
-        specifier: ^9.4.2
+        specifier: ^9.5.1
         version: 9.5.1
       '@fastify/swagger-ui':
-        specifier: ^5.2.1
+        specifier: ^5.2.3
         version: 5.2.3
       '@fastify/type-provider-typebox':
         specifier: ^5.1.0
