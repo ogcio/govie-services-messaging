@@ -1,0 +1,37 @@
+{
+  "name": "@ogcio/typescript-monorepo-scaffolding",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm -r dev 2>&1 | tee logs/dev.log",
+    "build": "pnpm -r build",
+    "format": "pnpm -r format",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "prepare": "husky || true",
+    "preinstall": "npx only-allow pnpm",
+    "db:up": "docker compose -f docker-compose.yaml up --detach",
+    "env:init": "node scripts/init-env.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "^2.1.2",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@types/node": "^24.0.14",
+    "@vitest/coverage-v8": "^3.2.4",
+    "concurrently": "^9.2.0",
+    "husky": "^9.1.7",
+    "nodemon": "^3.1.10",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
