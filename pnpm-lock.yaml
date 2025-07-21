@@ -90,8 +90,8 @@ importers:
         specifier: ^5.2.3
         version: 5.2.3
       '@ogcio/o11y-sdk-node':
-        specifier: ^0.1.0-beta.13
-        version: 0.1.0-beta.13
+        specifier: ^0.2.0
+        version: 0.2.0
       '@ogcio/shared-errors':
         specifier: ^1.1.0
         version: 1.1.0
@@ -834,8 +834,8 @@ packages:
   '@ogcio/fastify-logging-wrapper@5.2.3':
     resolution: {integrity: sha512-aLDSmBoekrUDOa7XNLsrjb4VgZ+mWZSJd0ZUSjJPL32xYh+lOyt6ssZtLixFU1jDIxHmewumR1oulRagPheP7A==}
 
-  '@ogcio/o11y-sdk-node@0.1.0-beta.13':
-    resolution: {integrity: sha512-+k/f2146/LhcgwEfCRurp5yx8fJNJwck7LwFLq41tctAyOFXJoAcl5/arw3oaO2sOZ8V/etOW5cvslA98X6tzw==}
+  '@ogcio/o11y-sdk-node@0.2.0':
+    resolution: {integrity: sha512-YhZX/Bhy1kcrQALp0OBTYKTDnsI0ayw7WGndSDi7BXkl8RtpVuDyxhpp56/WCiS/3OoToJh5r1NL5P7mmNh92Q==}
     engines: {node: '>=20.6.0'}
 
   '@ogcio/shared-errors@1.0.0':
@@ -5210,7 +5210,7 @@ snapshots:
       fastify: 5.4.0
       hyperid: 3.3.0
 
-  '@ogcio/o11y-sdk-node@0.1.0-beta.13':
+  '@ogcio/o11y-sdk-node@0.2.0':
     dependencies:
       '@grpc/grpc-js': 1.13.4
       '@opentelemetry/api': 1.9.0
