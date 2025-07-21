@@ -124,8 +124,8 @@ importers:
         version: 8.0.0
     devDependencies:
       '@testcontainers/postgresql':
-        specifier: ^10.17.2
-        version: 10.28.0
+        specifier: ^11.3.1
+        version: 11.3.1
       '@types/http-errors':
         specifier: ^2.0.4
         version: 2.0.5
@@ -681,10 +681,6 @@ packages:
 
   '@fastify/autoload@6.3.1':
     resolution: {integrity: sha512-0fsG+lO3m5yEZVjXKpltCe+2eHhM6rfAPQhvlGUgLUFTw/N2wA9WqPTObMtrF3oUCUrxbSDv60HlUIoh+aFM1A==}
-
-  '@fastify/busboy@2.1.1':
-    resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
-    engines: {node: '>=14'}
 
   '@fastify/env@5.0.2':
     resolution: {integrity: sha512-4m/jHS3s/G/DBJVODob9sxGUei/Ij8JFbA2PYqBfoihTm+Qqae2xD9xhez68UFZu1d4SNJPIb6uAOwbNvRYw+A==}
@@ -1636,8 +1632,8 @@ packages:
     resolution: {integrity: sha512-b+zebfKCfRdgNJDknHCob3O7FpeYQN6ZG6YLExMcasDHsCXlsXCEuiPZeLnJLpwa5dvPetGlnGCiMHuLwGvFow==}
     engines: {node: '>=18.0.0'}
 
-  '@testcontainers/postgresql@10.28.0':
-    resolution: {integrity: sha512-NN25rruG5D4Q7pCNIJuHwB+G85OSeJ3xHZ2fWx0O6sPoPEfCYwvpj8mq99cyn68nxFkFYZeyrZJtSFO+FnydiA==}
+  '@testcontainers/postgresql@11.3.1':
+    resolution: {integrity: sha512-grTBxfm37xO6w6ySCu705Vp17HBxGMKkUTCQhQWZu7NZo/I3tNtjQxqDmBxG5Dfxoq9I2IIBpQRpeAW3QyYNrw==}
 
   '@types/aws-lambda@8.10.150':
     resolution: {integrity: sha512-AX+AbjH/rH5ezX1fbK8onC/a+HyQHo7QGmvoxAE42n22OsciAxvZoZNEr22tbXs8WfP1nIsBjKDpgPm3HjOZbA==}
@@ -2273,8 +2269,8 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
-  docker-compose@0.24.8:
-    resolution: {integrity: sha512-plizRs/Vf15H+GCVxq2EUvyPK7ei9b/cVesHvjnX4xaXjM9spHe2Ytq0BitndFgvTJ3E3NljPNUEl7BAN43iZw==}
+  docker-compose@1.2.0:
+    resolution: {integrity: sha512-wIU1eHk3Op7dFgELRdmOYlPYS4gP8HhH1ZmZa13QZF59y0fblzFDFmKPhyc05phCy2hze9OEvNZAsoljrs+72w==}
     engines: {node: '>= 6.0.0'}
 
   docker-modem@5.0.6:
@@ -3616,8 +3612,8 @@ packages:
     resolution: {integrity: sha512-pFYqmTw68LXVjeWJMST4+borgQP2AyMNbg1BpZh9LbyhUeNkeaPF9gzfPGUAnSMV3qPYdWUwDIjjCLiSDOl7vg==}
     engines: {node: '>=18'}
 
-  testcontainers@10.28.0:
-    resolution: {integrity: sha512-1fKrRRCsgAQNkarjHCMKzBKXSJFmzNTiTbhb5E/j5hflRXChEtHvkefjaHlgkNUjfw92/Dq8LTgwQn6RDBFbMg==}
+  testcontainers@11.3.1:
+    resolution: {integrity: sha512-5oO0oQjF7gdWdXCVYC3vH6iSTDW8rQsWq7p5xdR17ujhhiPfQgf0hptqmeCCcnht/Qw6wWk5h1JlZnaJPP/Bhg==}
 
   text-decoder@1.2.3:
     resolution: {integrity: sha512-3/o9z3X0X0fTupwsYvR03pJ/DjWuqqrfwBgTQzdWDiQSm9KitAyz/9WqsT2JQW7KV2m+bC2ol/zqpW37NHxLaA==}
@@ -3733,10 +3729,6 @@ packages:
 
   undici-types@7.8.0:
     resolution: {integrity: sha512-9UJ2xGDvQ43tYyVMpuHlsgApydB8ZKfVYTsLDhXkFL/6gfkp+U8xTGdh8pMJv1SpZna0zxG1DwsKZsreLbXBxw==}
-
-  undici@5.29.0:
-    resolution: {integrity: sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg==}
-    engines: {node: '>=14.0'}
 
   undici@7.12.0:
     resolution: {integrity: sha512-GrKEsc3ughskmGA9jevVlIOPMiiAHJ4OFUtaAH+NhfTUSiZ1wMPIQqQvAJUrJspFXJt3EBWgpAeoHEDVT1IBug==}
@@ -4993,8 +4985,6 @@ snapshots:
       fast-uri: 3.0.6
 
   '@fastify/autoload@6.3.1': {}
-
-  '@fastify/busboy@2.1.1': {}
 
   '@fastify/env@5.0.2':
     dependencies:
@@ -6324,9 +6314,9 @@ snapshots:
       '@smithy/util-buffer-from': 4.0.0
       tslib: 2.8.1
 
-  '@testcontainers/postgresql@10.28.0':
+  '@testcontainers/postgresql@11.3.1':
     dependencies:
-      testcontainers: 10.28.0
+      testcontainers: 11.3.1
     transitivePeerDependencies:
       - bare-buffer
       - supports-color
@@ -7076,7 +7066,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  docker-compose@0.24.8:
+  docker-compose@1.2.0:
     dependencies:
       yaml: 2.8.0
 
@@ -8523,7 +8513,7 @@ snapshots:
       glob: 10.4.5
       minimatch: 9.0.5
 
-  testcontainers@10.28.0:
+  testcontainers@11.3.1:
     dependencies:
       '@balena/dockerignore': 1.0.2
       '@types/dockerode': 3.3.42
@@ -8531,7 +8521,7 @@ snapshots:
       async-lock: 1.4.1
       byline: 5.0.0
       debug: 4.4.1(supports-color@10.0.0)
-      docker-compose: 0.24.8
+      docker-compose: 1.2.0
       dockerode: 4.0.7
       get-port: 7.1.0
       proper-lockfile: 4.1.2
@@ -8539,7 +8529,7 @@ snapshots:
       ssh-remote-port-forward: 1.0.4
       tar-fs: 3.1.0
       tmp: 0.2.3
-      undici: 5.29.0
+      undici: 7.12.0
     transitivePeerDependencies:
       - bare-buffer
       - supports-color
@@ -8635,10 +8625,6 @@ snapshots:
   undici-types@5.26.5: {}
 
   undici-types@7.8.0: {}
-
-  undici@5.29.0:
-    dependencies:
-      '@fastify/busboy': 2.1.1
 
   undici@7.12.0: {}
 
