@@ -39,8 +39,7 @@ resources:
     - repository: pipeline-templates
       type: github
       name: ogcio/building-blocks-pipelines
-      ref: refs/tags/v0.5.18
-      endpoint: ogcio
+      ref: refs/tags/v0.5.19
       endpoint: ogcio
     - repository: messaging-api-k8s-apps
       type: github
@@ -87,7 +86,7 @@ stages:
         - securityScan
         - BuildDeps
       jobs:
-        - template: test/unit_test.yml@pipeline-templates
+        - template: test/pnpm_unit_test.yml@pipeline-templates
           parameters:
             serviceName: ${{ serviceName }}
             testPath: './apps/'

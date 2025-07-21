@@ -1,0 +1,146 @@
+{
+  "0b5cdf26271b6bc9a38744c63b2f3fa9_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging app admin",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "10ea8a7990e12b7376d4f3685416f057_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api utils",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "1fb4eb444d322bec43afb4dfd01ca152_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api migrations",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "1fb4eb444d322bec43afb4dfd01ca152_1": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api migrations",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "317505089b187148e44c5b31b70f24cd_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api migrations",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "53569860f568ada13d306f48cca41aed_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging app home",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "637a00b0a1dd80e4cf8c49c2abb9d47d_0": {
+    "author": "system",
+    "comment": "Hard-coded dummy secret in messaging logto-config.ts",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "637a00b0a1dd80e4cf8c49c2abb9d47d_1": {
+    "author": "system",
+    "comment": "Hard-coded dummy secret in messaging logto-config.ts",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "637a00b0a1dd80e4cf8c49c2abb9d47d_2": {
+    "author": "system",
+    "comment": "Hard-coded dummy secret in messaging logto-config.ts",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "74988a331152ddf6a37c36c8eff3731a_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging app loaders",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "7f3ee707d96d2f0b2eed86596d9a8be4_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging utils",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "894524cf10f6624e149df4a9c40ca61e_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging app admin",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "9c7141d1b8ae3a15bf499d5ef278d15b_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api migrations",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "9c7141d1b8ae3a15bf499d5ef278d15b_1": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api migrations",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "a2ff667d73f0eb4f91b65603a7396414_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api services",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "a2ff667d73f0eb4f91b65603a7396414_1": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api services",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "a2ff667d73f0eb4f91b65603a7396414_2": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api services",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "a2ff667d73f0eb4f91b65603a7396414_3": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api services",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "c58e826a9e38ad21cf1135245b21a062_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "d118457e2d0a359e8a103f48d42c409e_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging utils",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "d999d98ae043ae5cae49e4d87feefd28_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging app",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "f888435a68c21f6353454af4b4b19cce_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging utils",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "a2ff667d73f0eb4f91b65603a7396414_4": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging-api job service",
+    "false_positive": true,
+    "ignored_at": "2025-03-12T17:19:29Z"
+  },
+  "e87b562baaf80485156fc64ba27001c9_0": {
+    "author": "system",
+    "comment": "Logger information leakage in messaging instrumentation",
+    "false_positive": true,
+    "ignored_at": "2025-04-29T08:37:30Z"
+  }
+}
