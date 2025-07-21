@@ -1,35 +1,46 @@
-FROM base-deps AS deps
+FROM base-deps AS messaging-api-base-deps
+
+RUN npm install -g pnpm
+# Add non-root user
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -G nodejs
+
+FROM messaging-api-base-deps AS deps
 
 WORKDIR /app
 
-COPY ./package*.json /app/
-COPY ./apps/messaging-api/ /app/apps/messaging-api/
+COPY package.json pnpm-*.yaml /app/
+COPY apps/messaging-api/package*.json /app/apps/messaging-api/
 
-RUN npm ci 
+RUN pnpm i --frozen-lockfile
 
 FROM deps AS builder
+WORKDIR /app
 
-RUN npm run build --workspace=apps/messaging-api
+COPY --from=deps --chown=node:node /app/apps/messaging-api/node_modules /app/apps/messaging-api/node_modules
+COPY --from=deps --chown=node:node /app/node_modules /app/node_modules
+COPY apps/messaging-api/src /app/apps/messaging-api/src
+COPY apps/messaging-api/tsconfig* /app/apps/messaging-api/
 
-FROM base-deps AS assembler
+RUN pnpm --filter messaging-api build
+
+FROM messaging-api-base-deps AS assembler
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV LOG_LEVEL=trace
+ENV LOG_LEVEL=INFO
 
-COPY --from=builder /app/package*.json /app/
-COPY --from=builder /app/node_modules /app/node_modules
+COPY --from=builder --chown=node:node /app/package.json /app/
+COPY --from=builder --chown=node:node /app/apps/messaging-api/dist /app/apps/messaging-api/dist
+COPY --from=builder --chown=node:node /app/apps/messaging-api/package*.json /app/apps/messaging-api/
+COPY --from=builder --chown=node:node /app/apps/messaging-api/node_modules /app/apps/messaging-api/node_modules
+COPY --from=builder --chown=node:node /app/node_modules /app/node_modules
 
-COPY --from=builder /app/apps/messaging-api/dist /app/apps/messaging-api/dist
-COPY --from=builder /app/apps/messaging-api/node_modules /app/apps/messaging-api/node_modules
-COPY --from=builder /app/apps/messaging-api/package*.json /app/apps/messaging-api/
-
-RUN npm prune --omit=dev
+RUN pnpm prune --prod
 
 FROM base-deps AS runner
 
 ENV NODE_ENV=production
-ENV LOG_LEVEL=trace
+ENV LOG_LEVEL=INFO
 
 COPY --from=assembler /app /app
 
