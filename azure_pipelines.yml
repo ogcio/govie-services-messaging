@@ -41,7 +41,6 @@ resources:
       name: ogcio/building-blocks-pipelines
       ref: refs/tags/v0.5.18
       endpoint: ogcio
-      endpoint: ogcio
     - repository: messaging-api-k8s-apps
       type: github
       name: ogcio/messaging-api-k8s-apps
