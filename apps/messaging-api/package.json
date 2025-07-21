@@ -48,6 +48,7 @@
     "@ogcio/o11y-sdk-node": "^0.1.0-beta.13",
     "@ogcio/fastify-error-handler": "^5.2.1",
     "@ogcio/fastify-logging-wrapper": "^5.2.3",
+    "@ogcio/shared-errors": "^1.1.0",
     "@sinclair/typebox": "^0.34.16",
     "fastify": "^5.2.1",
     "fastify-plugin": "^5.0.1",
