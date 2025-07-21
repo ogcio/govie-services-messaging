@@ -32,15 +32,15 @@ export async function doMigration(
       driver: "pg",
       database: envDbConfig.POSTGRES_DB_NAME,
       execQuery: (query) => {
-        // # TODO remove After event summary runs
-        console.log({ query });
         return client.query(query);
       },
     });
 
-    await postgrator.migrate(version);
-
-    console.log("Migration completed!");
+    const migrated = await postgrator.migrate(version);
+    console.log("List of executed migrations: ");
+    for (const migration of migrated) {
+      console.log(migration.name);
+    }
   } catch (err) {
     console.error(err);
   } finally {

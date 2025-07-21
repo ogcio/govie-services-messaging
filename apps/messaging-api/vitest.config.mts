@@ -20,7 +20,7 @@ export default defineConfig({
       "./src/@(test?(s)|__test?(s)__)/**/*.test.@(js|cjs|mjs|tap|cts|jsx|mts|ts|tsx)",
       //"./src/test/services/message-events/summary-event-logger.test.ts"
     ],
-    setupFiles: ["dotenv/config"], // to load env vars from .env file
+
     exclude: ["./src/**/@(fixture*(s)|dist|node_modules)/**"],
     maxConcurrency: 1,
     testTimeout: 120000, // Timeout in milliseconds,
