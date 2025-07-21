@@ -15,6 +15,7 @@ export interface EnvEmailConfig {
   EMAIL_PROVIDER_SMTP_PASSWORD: string;
   EMAIL_PROVIDER_SMTP_FROM_ADDRESS: string;
   EMAIL_PROVIDER_SMTP_USE_SSL: boolean;
+  WEBHOOK_URL_BASE: string;
 }
 
 export interface EnvSnsConfig {
@@ -184,6 +185,7 @@ export const EnvKeys: Record<
     type: "string",
     required: false,
   },
+  WEBHOOK_URL_BASE: { type: "string", required: true },
 };
 
 const allKeys = Object.keys(EnvKeys);

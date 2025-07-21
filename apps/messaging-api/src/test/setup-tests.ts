@@ -29,6 +29,10 @@ export async function teardown() {
   delete process.env[DATABASE_TEST_URL_KEY];
 }
 
+const customEnvValues: Record<string, string> = {
+  WEBHOOK_URL_BASE: "http://localhost:1000",
+};
+
 async function setVariablesToRunWithoutEnvFile() {
   for (const current of Object.entries(EnvKeys)) {
     const [key, value] = current;
@@ -38,6 +42,11 @@ async function setVariablesToRunWithoutEnvFile() {
 
     if (value.default) {
       process.env[key] = value.default as string;
+      continue;
+    }
+
+    if (key in customEnvValues) {
+      process.env[key] = customEnvValues[key];
       continue;
     }
 
