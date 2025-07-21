@@ -96,7 +96,7 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       '@sinclair/typebox':
-        specifier: ^0.34.16
+        specifier: ^0.34.38
         version: 0.34.38
       fastify:
         specifier: ^5.2.1
