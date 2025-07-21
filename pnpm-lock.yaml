@@ -114,8 +114,8 @@ importers:
         specifier: ^2.6.0
         version: 2.6.0
       nodemailer:
-        specifier: ^6.10.0
-        version: 6.10.1
+        specifier: ^7.0.5
+        version: 7.0.5
       pg:
         specifier: ^8.13.1
         version: 8.16.3
@@ -3031,8 +3031,8 @@ packages:
     resolution: {integrity: sha512-sIyB/5296U2tMT7hH1nrkoYUXkRxuLsG40fgUHaBhzM+G/uyBKBo+QNsvKqE5FNq24QJM+tr97N+knLQiEEcSg==}
     engines: {node: '>= 18.0.0'}
 
-  nodemailer@6.10.1:
-    resolution: {integrity: sha512-Z+iLaBGVaSjbIzQ4pX6XV41HrooLsQ10ZWPUehGmuantvzWoDVBnmsdUcOIDM1t+yPor5pDhVlDESgOMEGxhHA==}
+  nodemailer@7.0.5:
+    resolution: {integrity: sha512-nsrh2lO3j4GkLLXoeEksAMgAOqxOv6QumNRVQTJwKH4nuiww6iC2y7GyANs9kRAxCexg3+lTWM3PZ91iLlVjfg==}
     engines: {node: '>=6.0.0'}
 
   nodemon@3.1.10:
@@ -7848,7 +7848,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  nodemailer@6.10.1: {}
+  nodemailer@7.0.5: {}
 
   nodemon@3.1.10:
     dependencies:
