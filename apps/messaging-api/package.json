@@ -33,7 +33,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-sns": "^3.835.0",
+    "@aws-sdk/client-sns": "^3.848.0",
     "@cacheable/node-cache": "^1.5.8",
     "@fastify/autoload": "^6.1.0",
     "@fastify/env": "^5.0.2",

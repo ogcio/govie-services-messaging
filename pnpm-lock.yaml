@@ -48,7 +48,7 @@ importers:
   apps/messaging-api:
     dependencies:
       '@aws-sdk/client-sns':
-        specifier: ^3.835.0
+        specifier: ^3.848.0
         version: 3.848.0
       '@cacheable/node-cache':
         specifier: ^1.5.8
