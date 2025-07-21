@@ -41,7 +41,7 @@
     "@fastify/sensible": "^6.0.3",
     "@fastify/swagger": "^9.5.1",
     "@fastify/swagger-ui": "^5.2.3",
-    "@fastify/type-provider-typebox": "^5.1.0",
+    "@fastify/type-provider-typebox": "^5.2.0",
     "@fastify/under-pressure": "^9.0.3",
     "@ogcio/api-auth": "^5.1.1",
     "@ogcio/building-blocks-sdk": "^0.2.42",
