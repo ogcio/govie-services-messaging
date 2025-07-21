@@ -39,7 +39,7 @@ resources:
     - repository: pipeline-templates
       type: github
       name: ogcio/building-blocks-pipelines
-      ref: refs/tags/v0.5.18
+      ref: refs/tags/v0.5.19
       endpoint: ogcio
     - repository: messaging-api-k8s-apps
       type: github
@@ -91,6 +91,7 @@ stages:
             serviceName: ${{ serviceName }}
             testPath: './apps/'
             dependenciesBuild: 'node scripts/init-env.mjs'
+            nodeVersion: '22.x'
     - stage: Build_${{ replace(serviceName, '-', '_') }}
       displayName: Build ${{ serviceName }}
       pool:
