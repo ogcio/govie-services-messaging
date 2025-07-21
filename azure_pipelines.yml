@@ -1,7 +1,6 @@
 trigger:
   - dev
   - uat
-  - sta
 
 pr:
   autoCancel: true
