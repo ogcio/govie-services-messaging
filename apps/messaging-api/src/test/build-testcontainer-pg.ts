@@ -20,7 +20,7 @@ export function getConfigFromContainer(started: StartedPostgreSqlContainer) {
 }
 
 export async function startPostgresContainer() {
-  return new PostgreSqlContainer().start();
+  return new PostgreSqlContainer("postgres:16-alpine").start();
 }
 
 export async function migrateContainer(
