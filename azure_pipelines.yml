@@ -1,0 +1,187 @@
+trigger:
+  - dev
+  - uat
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "*"
+
+# Services object is now defined per environment. 
+# Check the variables file for the desired environment!
+parameters:
+  - name: buildBranches
+    type: object
+    default: ["dev", "uat", "prod"]
+
+  - name: validEnvironments
+    type: object
+    displayName: List of valid environments to deploy (do not change)
+    default: ["dev", "uat", "prod"]
+
+  - name: vmImage
+    type: string
+    default: "ubuntu-22.04"
+
+variables:
+  - name: pushArtefacts
+    value: ${{ containsValue(parameters.buildBranches, variables['Build.SourceBranchName']) }}
+  - ${{ if containsValue(parameters.validEnvironments ,variables['Build.SourceBranchName']) }}:
+    - template: pipeline-variables/${{ coalesce(variables['Build.SourceBranchName'], 'fallback') }}.yml
+  - ${{ else }}:
+    - template: pipeline-variables/dev.yml
+  - name: runSmokeTest
+    value: ${{ eq('dev', variables['Build.SourceBranchName']) }}
+
+resources:
+  repositories:
+    - repository: pipeline-templates
+      type: github
+      name: ogcio/building-blocks-pipelines
+      ref: refs/tags/v0.5.18
+      endpoint: ogcio
+      endpoint: ogcio
+    - repository: messaging-api-k8s-apps
+      type: github
+      name: ogcio/messaging-api-k8s-apps
+      ref: main
+      endpoint: ogcio
+    - repository: messaging-k8s-apps
+      type: github
+      name: ogcio/messaging-k8s-apps
+      ref: main
+      endpoint: ogcio
+
+stages:
+  - stage: securityScan
+    displayName: Security Scans
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+    jobs:
+      -  template: security/gitleaks.yml@pipeline-templates
+      - ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
+        - job: bearerScan
+          displayName: Bearer
+          steps:
+            - task: DockerInstaller@0
+              displayName: Docker Installer
+              inputs:
+                dockerVersion: 17.09.0-ce
+                releaseType: stable
+            - script: |
+                docker run --rm -v $(pwd):/tmp/scan bearer/bearer:latest-amd64 scan --no-color --hide-progress-bar --fail-on-severity critical,high /tmp/scan
+              displayName: Code Scan
+  - stage: BuildDeps
+    displayName: Build service dependencies
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+    jobs:
+      - template: pipeline-templates/build_dependencies.yml
+  - ${{ each serviceName in split(replace(variables.services, ' ', ''), ',') }}:
+    - stage: Unit_Tests_${{ replace(serviceName, '-', '_') }}
+      displayName: Run unit tests - ${{ serviceName }}
+      pool:
+         vmImage: ${{ parameters.vmImage }}
+      dependsOn: 
+        - securityScan
+        - BuildDeps
+      jobs:
+        - template: test/unit_test.yml@pipeline-templates
+          parameters:
+            serviceName: ${{ serviceName }}
+            testPath: './apps/'
+            dependenciesBuild: 'node scripts/init-env.mjs'
+    - stage: Build_${{ replace(serviceName, '-', '_') }}
+      displayName: Build ${{ serviceName }}
+      pool:
+        vmImage: ${{ parameters.vmImage }}
+      dependsOn: Unit_Tests_${{ replace(serviceName, '-', '_') }}
+      jobs:
+      - template: build/build_service.yml@pipeline-templates
+        parameters:
+          serviceName: ${{ serviceName }}
+          pushArtefacts: true
+          dockerfile: apps/${{ serviceName }}/Dockerfile
+          dependencies: "base-deps"
+          # TODO: Use arguments per service
+          buildArguments: '--build-arg "NEXT_PUBLIC_MESSAGING_SERVICE_ENTRY_POINT=$(nextPublicMessagingServiceEntryPoint)" --build-arg "NEXT_PUBLIC_PAYMENTS_SERVICE_ENTRY_POINT=$(nextPublicPaymentsServiceEntryPoint)" --build-arg "NEXT_PUBLIC_BUILDING_BLOCKS_LANDING_PAGE=$(nextPublicBuildingBlocksLandingPage)" --build-arg "NEXT_PUBLIC_FORMS_URL=$(nextPublicFormsUrl)" --build-arg "NEXT_PUBLIC_MATOMO_URL=$(nextPublicMatomoUrl)" --build-arg "NEXT_PUBLIC_LIFE_EVENTS_MATOMO_SITE_ID=$(nextPublicLifeEventsMatomoSiteId)" --build-arg "NEXT_PUBLIC_BUILDING_BLOCKS_MATOMO_SITE_ID=$(nextPublicBuildingBlocksMatomoSiteId)" --build-arg "NEXT_PUBLIC_PAYMENTS_MATOMO_SITE_ID=$(nextPublicPaymentsMatomoSiteId)" --build-arg "NEXT_PUBLIC_MATOMO_PROTOCOL=$(nextPublicMatomoProtocol)" --build-arg "NEXT_PUBLIC_PROFILE_SERVICE_ENTRY_POINT=$(nextPublicProfileServiceEntryPoint)" --build-arg "NEXT_PUBLIC_PROFILE_ADMIN_SERVICE_ENTRY_POINT=$(nextPublicProfileAdminServiceEntryPoint)" --build-arg "NEXT_PUBLIC_FORMS_SERVICE_ENTRY_POINT=$(nextPublicFormsServiceEntryPoint)" --build-arg "NEXT_PUBLIC_JOURNEY_SERVICE_ENTRY_POINT=$(nextPublicJourneyServiceEntryPoint)" --build-arg "NEXT_PUBLIC_DASHBOARD_SERVICE_ENTRY_POINT=$(nextPublicDashboardServiceEntryPoint)" --build-arg "NEXT_PUBLIC_DASHBOARD_ADMIN_SERVICE_ENTRY_POINT=$(nextPublicDashboardAdminServiceEntryPoint)"'
+    - stage: Scan_${{ replace(serviceName, '-', '_') }}
+      displayName: Scan ${{ serviceName }}
+      pool:
+        vmImage: ${{ parameters.vmImage }}
+      dependsOn:
+        - Build_${{ replace(serviceName, '-', '_') }}
+      jobs:
+        - template: security/trivy.yml@pipeline-templates
+          parameters:
+            pullDockerImageFromArtifact: true
+            awsServiceConnection: ${{ variables.awsServiceConnection }}
+            dockerImageName: ${{ serviceName }}
+            dockerImageTag: $(Build.BuildId)
+            errorExitCode: 0 # TODO: remove me when found vulns are fixed
+    - stage: Push_${{ replace(serviceName, '-', '_') }}
+      displayName: Push ${{ serviceName }} to ECR
+      pool:
+        vmImage: ${{ parameters.vmImage }}
+      dependsOn: 
+        - Scan_${{ replace(serviceName, '-', '_') }}
+      condition: and(${{ variables.pushArtefacts }}, succeeded())
+      jobs:
+      - template: build/push_image_ecr.yml@pipeline-templates
+        parameters:
+          awsServiceConnection: ${{ variables.awsServiceConnection }}
+          awsRegion: ${{ variables.awsRegion }}
+          serviceName: ${{ serviceName }}
+          repositoryName: bb-${{ serviceName }}
+          pushTag: $(Build.BuildId)
+  - stage: EnvApproval
+    displayName: Approvals for deployments - ${{ upper(variables.environment) }}
+    dependsOn:
+      - ${{ each serviceName in split(replace(variables.services, ' ', ''), ',') }}:
+        - Push_${{ replace(serviceName, '-', '_') }}
+    condition: ${{ variables.pushArtefacts }}
+    jobs:
+    - deployment: VerifyDeployment
+      displayName: Verify conditions for deployment
+      environment: ${{ variables.environment }}
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - download: none
+            - script: |
+                date
+              displayName: Show current date
+  - ${{ each serviceName in split(replace(variables.services, ' ', ''), ',') }}:
+    - stage: Deploy_Openshift_${{ replace(serviceName, '-', '_') }}
+      displayName: GitOps deploy ${{ serviceName }}
+      pool:
+        vmImage: ${{ parameters.vmImage }}
+      dependsOn:
+        - EnvApproval
+        - Push_${{ replace(serviceName, '-', '_') }}
+      condition: succeeded()
+      jobs:
+      - template: deploy/gitops.yml@pipeline-templates
+        parameters:
+          serviceName: ${{ serviceName }}
+          clusterName: ${{ variables.clusterName }}
+          newName: ${{ variables.ecrEndpoint }}/bb-${{ serviceName }}
+          newTag: $(Build.BuildId)
+          ${{ if containsValue(parameters.validEnvironments ,variables['Build.SourceBranchName']) }}:
+            environment: ${{ variables['Build.SourceBranchName'] }}
+          ${{ else }}:
+            environment: dev
+    - stage: Smoke_Tests_${{ replace(serviceName, '-', '_') }}
+      displayName: Run smoke tests - ${{ serviceName }}
+      # TODO: uncomment me when pool is ready
+      # condition: ${{ variables.runSmokeTests }}
+      condition: ${{ eq('true', 'false') }}
+      pool: 'Openshift'
+      dependsOn: Deploy_Openshift_${{ replace(serviceName, '-', '_') }}
+      jobs:
+        - template: test/smoke_test.yml@pipeline-templates
+          parameters:
+            serviceName: ${{ serviceName }}
+            testPath: './apps/'

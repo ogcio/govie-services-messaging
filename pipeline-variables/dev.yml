@@ -1,0 +1,23 @@
+variables:
+  awsServiceConnection: aws-sharedservices-building-blocks-azure-devops
+  awsRegion: eu-west-1
+  ecrEndpoint: 428528001781.dkr.ecr.eu-west-1.amazonaws.com
+  environment: LifeEvents-dev
+  services: upload-api, messaging-api, messaging, scheduler-api, dashboard, dashboard-admin
+  clusterName: non-prod-02
+
+  nextPublicMessagingServiceEntryPoint: https://messaging.dev.services.gov.ie
+  nextPublicPaymentsServiceEntryPoint: https://payments.dev.services.gov.ie
+  nextPublicBuildingBlocksLandingPage: https://home.dev.services.gov.ie
+  nextPublicProfileServiceEntryPoint: https://profile.dev.services.gov.ie
+  nextPublicProfileAdminServiceEntryPoint: https://profile-admin.dev.services.gov.ie
+  nextPublicDashboardServiceEntryPoint: https://dashboard.dev.services.gov.ie
+  nextPublicDashboardAdminServiceEntryPoint: https://dashboard-admin.dev.services.gov.ie
+  nextPublicJourneyServiceEntryPoint: https://journey.dev.services.gov.ie
+  nextPublicFormsServiceEntryPoint: https://formsie.dev.gov.ie
+  nextPublicFormsUrl: https://www.forms.dev.services.gov.ie/
+  nextPublicMatomoUrl: //analytics.ogcio.gov.ie
+  nextPublicMatomoProtocol: https
+  nextPublicLifeEventsMatomoSiteId: 11
+  nextPublicBuildingBlocksMatomoSiteId: 14
+  nextPublicPaymentsMatomoSiteId: 15
