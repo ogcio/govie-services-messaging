@@ -86,12 +86,11 @@ stages:
         - securityScan
         - BuildDeps
       jobs:
-        - template: test/unit_test.yml@pipeline-templates
+        - template: test/pnpm_unit_test.yml@pipeline-templates
           parameters:
             serviceName: ${{ serviceName }}
             testPath: './apps/'
             dependenciesBuild: 'node scripts/init-env.mjs'
-            nodeVersion: '22.x'
     - stage: Build_${{ replace(serviceName, '-', '_') }}
       displayName: Build ${{ serviceName }}
       pool:
