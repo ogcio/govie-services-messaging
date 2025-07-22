@@ -53,9 +53,12 @@ importers:
       '@govie-ds/theme-govie':
         specifier: 1.4.0
         version: 1.4.0
+      '@logto/node':
+        specifier: 2.5.5
+        version: 2.5.5
       '@ogcio/building-blocks-sdk':
         specifier: 0.2.42
-        version: 0.2.42(typescript@5.8.3)
+        version: 0.2.42(@logto/node@2.5.5)(typescript@5.8.3)
       '@ogcio/nextjs-analytics':
         specifier: 1.0.0
         version: 1.0.0
@@ -191,7 +194,7 @@ importers:
         version: 5.1.1
       '@ogcio/building-blocks-sdk':
         specifier: ^0.2.43
-        version: 0.2.44(typescript@5.8.3)
+        version: 0.2.44(@logto/node@2.5.5)(typescript@5.8.3)
       '@ogcio/fastify-error-handler':
         specifier: ^5.2.1
         version: 5.2.1
@@ -1305,6 +1308,9 @@ packages:
     resolution: {integrity: sha512-sO5JdEwJFNkwVSyqvu/5HOw3PjXS0ZzrxVL212ydV/a/VhnA5+GMudwdc0wNrwgvjtkZhwMAVW1EWYVMZNRVqg==}
     peerDependencies:
       next: '>=12'
+
+  '@logto/node@2.5.5':
+    resolution: {integrity: sha512-dWKcqYj304Mj98I67MPO6z0XCCr59KLyIBRJ6Rbd13Imrxes58idN2u2M7pmGmqnU6Ssp+K7S0qkaNyd0epb9A==}
 
   '@logto/node@2.5.8':
     resolution: {integrity: sha512-QNVWIZf6sLAbF6rDT/wAG64S4IH5OQYk38fJvJYuIuMRHhUDf2VD+ENZ5BBwX3sOHFf6OM4rJVt2vWVJ8kTVow==}
@@ -7514,6 +7520,12 @@ snapshots:
       '@logto/node': 2.5.8
       next: 14.2.5(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
+  '@logto/node@2.5.5':
+    dependencies:
+      '@logto/client': 2.8.1
+      '@silverhand/essentials': 2.9.2
+      js-base64: 3.7.7
+
   '@logto/node@2.5.8':
     dependencies:
       '@logto/client': 2.8.1
@@ -7579,7 +7591,7 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@ogcio/building-blocks-sdk@0.2.42(typescript@5.8.3)':
+  '@ogcio/building-blocks-sdk@0.2.42(@logto/node@2.5.5)(typescript@5.8.3)':
     dependencies:
       '@ogcio/analytics-sdk': 0.2.1
       '@sinclair/typebox': 0.34.38
@@ -7590,10 +7602,12 @@ snapshots:
       openapi-typescript-helpers: 0.0.15
       safe-stable-stringify: 2.5.0
       yaml: 2.8.0
+    optionalDependencies:
+      '@logto/node': 2.5.5
     transitivePeerDependencies:
       - typescript
 
-  '@ogcio/building-blocks-sdk@0.2.44(typescript@5.8.3)':
+  '@ogcio/building-blocks-sdk@0.2.44(@logto/node@2.5.5)(typescript@5.8.3)':
     dependencies:
       '@ogcio/analytics-sdk': 0.2.1
       '@sinclair/typebox': 0.34.38
@@ -7604,6 +7618,8 @@ snapshots:
       openapi-typescript-helpers: 0.0.15
       safe-stable-stringify: 2.5.0
       yaml: 2.8.0
+    optionalDependencies:
+      '@logto/node': 2.5.5
     transitivePeerDependencies:
       - typescript
 
