@@ -37,12 +37,12 @@ ENV LOG_LEVEL=INFO
 ENV PORT=$PORT
 
 COPY --from=builder --chown=node:node /app/package.json /app/
+COPY --from=builder --chown=node:node /app/pnpm-*.yaml /app/
 COPY --from=builder --chown=node:node /app/apps/messaging-api/dist /app/apps/messaging-api/dist
 COPY --from=builder --chown=node:node /app/apps/messaging-api/package*.json /app/apps/messaging-api/
-COPY --from=builder --chown=node:node /app/apps/messaging-api/node_modules /app/apps/messaging-api/node_modules
-COPY --from=builder --chown=node:node /app/node_modules /app/node_modules
 
-RUN pnpm prune --prod
+RUN pnpm install --prod --frozen-lockfile && \
+    rm /app/pnpm-*.yaml
 
 FROM messaging-api-base-deps AS runner
 
