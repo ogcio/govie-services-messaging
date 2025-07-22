@@ -16,7 +16,9 @@
     "prepare": "husky || true",
     "preinstall": "npx only-allow pnpm",
     "db:up": "docker compose -f docker-compose.yaml up --detach",
-    "env:init": "node scripts/init-env.mjs"
+    "db:prepare": "pnpm db:up && pnpm --filter messaging-api db:create && pnpm --filter messaging-api db:migrate && pnpm --filter messaging-api sync-event-summary",
+    "env:init": "node scripts/init-env.mjs",
+    "run:dev": "pnpm db:prepare && pnpm dev"
   },
   "keywords": [],
   "author": "",
