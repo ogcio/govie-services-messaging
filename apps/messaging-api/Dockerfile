@@ -25,7 +25,7 @@ COPY --from=deps --chown=node:node /app/node_modules /app/node_modules
 COPY apps/messaging-api/src /app/apps/messaging-api/src
 COPY apps/messaging-api/tsconfig* /app/apps/messaging-api/
 
-RUN pnpm build:api
+RUN pnpm api:build
 
 FROM messaging-api-base-deps AS assembler
 WORKDIR /app

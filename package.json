@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "pnpm -r dev 2>&1 | tee logs/dev.log",
     "build": "pnpm -r build",
-    "build:api": "pnpm --filter messaging-api build",
+    "api:build": "pnpm --filter messaging-api build",
+    "www:build": "pnpm --filter messaging build",
     "format": "pnpm -r format",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
