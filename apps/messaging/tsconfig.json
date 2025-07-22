@@ -30,6 +30,12 @@
       "@/messages/*": ["messages/*"]
     }
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "next-intl-msgs.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
