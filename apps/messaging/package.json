@@ -1,0 +1,64 @@
+{
+  "name": "messaging",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "format": "biome check --write",
+    "lint": "biome check",
+    "test": "vitest run --coverage --reporter=junit --outputFile=results.xml || exit 0",
+    "test:local": "vitest",
+    "test:e2e:local": "playwright test",
+    "test:e2e:dev": "BASE_URL=https://messaging.dev.services.gov.ie AUTH_URL=https://authorization.dev.services.gov.ie/sign-in playwright test  --workers 1",
+    "test:e2e:dev:ui": "npm run test:e2e:dev -- --ui",
+    "test:smoke:e2e": "BASE_URL=https://messaging.dev.services.gov.ie AUTH_URL=https://authorization.dev.services.gov.ie/sign-in playwright test --grep '@regression' --workers 1",
+    "test:regression:e2e": "BASE_URL=https://messaging.dev.services.gov.ie AUTH_URL=https://authorization.dev.services.gov.ie/sign-in playwright test --grep '@regression|@smoke|@visual' --workers 1",
+    "test:nf": "mkdir -p test_reports && mkdir -p test_reports/perf && mkdir -p test_reports/a11y && node nonFunctionalTests/main.mjs",
+    "test:nf:local": "mkdir -p test_reports && mkdir -p test_reports/perf && mkdir -p test_reports/a11y && node nonFunctionalTests/main.mjs"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "./**/*"
+    ],
+    "ext": "ts,tsx,json",
+    "exec": "next dev -p 3002"
+  },
+  "dependencies": {
+    "@govie-ds/react": "1.7.2",
+    "@govie-ds/theme-govie": "1.4.0",
+    "@ogcio/building-blocks-sdk": "0.2.42",
+    "@ogcio/o11y-sdk-node": "^0.2.0",
+    "@ogcio/o11y-sdk-react": "^0.2.0",
+    "@ogcio/nextjs-o11y": "^0.0.1",
+    "@ogcio/nextjs-analytics": "1.0.0",
+    "@ogcio/nextjs-auth": "^4.0.6",
+    "@ogcio/nextjs-logging-wrapper": "14.2.9",
+    "@radix-ui/react-toast": "^1.2.2",
+    "dayjs": "^1.11.13",
+    "next": "14.2.5",
+    "next-intl": "^3.17.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sharp": "^0.34.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@axe-core/puppeteer": "^4.10.1",
+    "@faker-js/faker": "^9.3.0",
+    "@playwright/test": "^1.53.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-istanbul": "3.0.6",
+    "allure-playwright": "^3.0.0-beta.7",
+    "axe-html-reporter": "^2.2.11",
+    "chrome-launcher": "^1.1.2",
+    "fs": "0.0.1-security",
+    "jsdom": "25.0.1",
+    "lighthouse": "^12.2.1",
+    "puppeteer": "^24.6.1"
+  }
+}
