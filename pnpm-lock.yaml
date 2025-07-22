@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@logto/node':
+        specifier: 2.5.5
+        version: 2.5.5
+      '@ogcio/building-blocks-sdk':
+        specifier: ^0.2.45
+        version: 0.2.45(@logto/node@2.5.5)(typescript@5.8.3)
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.1.2
@@ -192,9 +199,6 @@ importers:
       '@ogcio/api-auth':
         specifier: ^5.1.1
         version: 5.1.1
-      '@ogcio/building-blocks-sdk':
-        specifier: ^0.2.43
-        version: 0.2.45(@logto/node@2.5.5)(typescript@5.8.3)
       '@ogcio/fastify-error-handler':
         specifier: ^5.2.1
         version: 5.2.1
