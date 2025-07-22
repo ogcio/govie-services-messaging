@@ -26,6 +26,7 @@ ENV NODE_ENV=production
 ENV LOG_LEVEL=info
 
 RUN pnpm --filter messaging build
+RUN pnpm prune --prod
 
 FROM base-deps AS runner
 
