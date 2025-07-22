@@ -27,8 +27,6 @@
   "dependencies": {
     "@govie-ds/react": "1.7.2",
     "@govie-ds/theme-govie": "1.4.0",
-    "@logto/node": "2.5.5",
-    "@ogcio/building-blocks-sdk": "0.2.42",
     "@ogcio/nextjs-analytics": "1.0.0",
     "@ogcio/nextjs-auth": "^5.0.1",
     "@ogcio/nextjs-logging-wrapper": "14.2.9",

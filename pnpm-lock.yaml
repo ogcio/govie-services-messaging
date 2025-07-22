@@ -60,12 +60,6 @@ importers:
       '@govie-ds/theme-govie':
         specifier: 1.4.0
         version: 1.4.0
-      '@logto/node':
-        specifier: 2.5.5
-        version: 2.5.5
-      '@ogcio/building-blocks-sdk':
-        specifier: 0.2.42
-        version: 0.2.42(@logto/node@2.5.5)(typescript@5.8.3)
       '@ogcio/nextjs-analytics':
         specifier: 1.0.0
         version: 1.0.0
@@ -1395,17 +1389,6 @@ packages:
 
   '@ogcio/api-auth@5.1.1':
     resolution: {integrity: sha512-rCzI3eFY5bM9Npbh3cfb4rrQ7pKe98P5B+I252NrTrEfz0hT/anOu9e06OfTv21gLoevOCi/fzP119uwi82qdw==}
-
-  '@ogcio/building-blocks-sdk@0.2.42':
-    resolution: {integrity: sha512-m55PIA9yrEwURRPjujUiU9JBw++7XMmVlkE5rJSyhGnET3+CgmPNJr7vilPfh3wp9pmu3u/PuyHMqU4XkJJ1Wg==}
-    peerDependencies:
-      '@logto/node': 2.5.5
-      unleash-client: ^6.1.1
-    peerDependenciesMeta:
-      '@logto/node':
-        optional: true
-      unleash-client:
-        optional: true
 
   '@ogcio/building-blocks-sdk@0.2.45':
     resolution: {integrity: sha512-wwaeVeo5csbth9makGRM7HnnbBDKzEQ0iIlPN0ldeF2nEqMvsNwCNYneaB9dPwWguJAv26Rg9HpCboi2AZNcPw==}
@@ -7585,22 +7568,6 @@ snapshots:
       jose: 5.10.0
     transitivePeerDependencies:
       - aws-crt
-
-  '@ogcio/building-blocks-sdk@0.2.42(@logto/node@2.5.5)(typescript@5.8.3)':
-    dependencies:
-      '@ogcio/analytics-sdk': 0.2.1
-      '@sinclair/typebox': 0.34.38
-      commander: 13.1.0
-      http-errors: 2.0.0
-      openapi-fetch: 0.13.8
-      openapi-typescript: 7.8.0(typescript@5.8.3)
-      openapi-typescript-helpers: 0.0.15
-      safe-stable-stringify: 2.5.0
-      yaml: 2.8.0
-    optionalDependencies:
-      '@logto/node': 2.5.5
-    transitivePeerDependencies:
-      - typescript
 
   '@ogcio/building-blocks-sdk@0.2.45(@logto/node@2.5.5)(typescript@5.8.3)':
     dependencies:
