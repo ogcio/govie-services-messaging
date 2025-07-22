@@ -57,7 +57,8 @@
     "node-polyglot": "^2.6.0",
     "nodemailer": "^7.0.5",
     "pg": "^8.16.3",
-    "postgrator": "^8.0.0"
+    "postgrator": "^8.0.0",
+    "@logto/node": "2.5.5"
   },
   "devDependencies": {
     "@testcontainers/postgresql": "^11.3.1",
