@@ -64,8 +64,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@ogcio/nextjs-auth':
-        specifier: ^5.0.1
-        version: 5.0.1(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^5.0.2
+        version: 5.0.2(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@ogcio/nextjs-logging-wrapper':
         specifier: 14.2.10
         version: 14.2.10(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -1419,8 +1419,8 @@ packages:
   '@ogcio/nextjs-analytics@1.0.0':
     resolution: {integrity: sha512-AxNdN3d+PXrRjtDmBQXcMR+BoB6fnFgZOo2O6HJ7m+Q9RNERApyXYEEHMKdz80sXdLFx8G5kEBCp2jPuzvikyQ==}
 
-  '@ogcio/nextjs-auth@5.0.1':
-    resolution: {integrity: sha512-R/WABY5XJNn4IukblXvFXIsPBOcUVONmT+YM9qauOKzD2nmms7n3SGaqhwrX/WFbBViHTyAUfLtKDez/l9XbQg==}
+  '@ogcio/nextjs-auth@5.0.2':
+    resolution: {integrity: sha512-7lOxgqbH95Qq0IQtOAPJ9XpBWQmr1AQkCuJG2bJUOvybnq7HpaqnVgGDk6IiZE4aroyzSayuzFVC6+R7+E3qdw==}
     peerDependencies:
       next: '>=14.2'
       react: '>=18.3'
@@ -7669,7 +7669,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@ogcio/nextjs-auth@5.0.1(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@ogcio/nextjs-auth@5.0.2(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@logto/next': 3.5.0(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@ogcio/nextjs-logging-wrapper': 14.2.10(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
