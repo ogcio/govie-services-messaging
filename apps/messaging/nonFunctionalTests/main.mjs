@@ -1,3 +1,4 @@
+import "dotenv/config"
 import util from "node:util"
 import * as chromeLauncher from "chrome-launcher"
 import puppeteer from "puppeteer"

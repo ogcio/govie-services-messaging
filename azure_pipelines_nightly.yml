@@ -2,7 +2,7 @@ trigger: none
 pr: none
 
 schedules: 
-- cron: '0 20 * * *'   # 8 pm daily test run
+- cron: '15 20 * * *'   # 8:15 pm daily test run
   branches: 
     include: 
     - dev
