@@ -27,7 +27,7 @@ stages:
       displayName: Run regression tests - ${{ serviceName }}
       pool: Openshift
       jobs:
-        - template: test/pnpm_smoke_test.yml@pipeline-templates
+        - template: test/pnpm_regression_test.yml@pipeline-templates
           parameters:
             serviceName: ${{ serviceName }}
             testPath: './apps/'
