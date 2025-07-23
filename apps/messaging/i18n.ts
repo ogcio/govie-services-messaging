@@ -3,7 +3,9 @@ import { getRequestConfig } from "next-intl/server"
 
 const locales = ["en", "ga"]
 
-export default getRequestConfig(async ({ locale }) => {
+export default getRequestConfig(async ({ requestLocale }) => {
+  const locale = await requestLocale
+
   // Validate that the incoming `locale` parameter is valid
   // biome-ignore lint/suspicious/noExplicitAny: needed
   if (!locales.includes(locale as any)) notFound()
@@ -12,6 +14,7 @@ export default getRequestConfig(async ({ locale }) => {
     .default
 
   return {
+    locale,
     messages: {
       ...applicationMessages,
     },

@@ -63,5 +63,6 @@ export const MessageStatus = ({
     }
   }
 
+  // biome-ignore lint/complexity/noUselessFragments: legacy
   return <></>
 }

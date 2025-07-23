@@ -52,7 +52,6 @@ export default function TemplatesList() {
   const t = useTranslations("template")
   const tSearch = useTranslations("search")
   const locale = useLocale()
-  const defaultLocale = "en"
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
@@ -74,7 +73,7 @@ export default function TemplatesList() {
   const [searchText, setSearchText] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   const doFetch = useCallback(async (search?: string) => {
     try {
       setIsFetching(true)
@@ -111,36 +110,38 @@ export default function TemplatesList() {
     await doFetch()
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     doFetch()
   }, [])
 
+  // biome-ignore lint/suspicious/noExplicitAny: needed for unknown
+  const anyState = state as any
   const lastDeletedId = useRef<string | undefined>()
   useEffect(() => {
     if (
-      state.deletedId &&
+      anyState.deletedId &&
       toDelete.id &&
-      state.deletedId !== lastDeletedId.current
+      anyState.deletedId !== lastDeletedId.current
     ) {
-      lastDeletedId.current = state.deletedId
+      lastDeletedId.current = anyState.deletedId
       setIsDeleting(false)
       setTemplates((prev) => prev?.filter((t) => t.id !== toDelete.id))
       setToDelete(deleteToDefault)
     }
-  }, [state.deletedId, toDelete.id])
+  }, [anyState.deletedId, toDelete.id])
 
   useEffect(() => {
-    if (state.error) {
+    if (anyState.error) {
       setIsDeleting(false)
     }
-  }, [state.error])
+  }, [anyState.error])
 
   const newid = searchParams.get("newid")
   const triggeredToaster = useRef(false)
 
   // go to send a message with created template pre-filled effect
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if (newid && !triggeredToaster.current && templates?.length) {
       const newTemplateName = templates
@@ -181,7 +182,7 @@ export default function TemplatesList() {
           {t("modal.delete.title", { name: toDelete.name })}
         </ModalTitle>
         <ModalBody>
-          {state.error && (
+          {anyState.error && (
             <FormField error={{ text: t("modal.delete.error") }} />
           )}
           <Paragraph>{t("modal.delete.body")}</Paragraph>

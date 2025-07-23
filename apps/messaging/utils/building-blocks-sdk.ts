@@ -147,7 +147,7 @@ const getSDKs = () => {
   })
 }
 
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+// biome-ignore lint/complexity/noStaticOnlyClass: legacy
 export class BBClients {
   static errorHandler(target, prop) {
     const original = target[prop]

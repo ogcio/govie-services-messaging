@@ -12,7 +12,7 @@ export default async (props: {
   params: { locale?: string; messageId: string }
 }) => {
   const t = await getTranslations("accountLinking")
-  const { message, linkedProfile, currentProfile, error } = await loader(props)
+  const { linkedProfile, currentProfile, error } = await loader(props)
 
   if (error) {
     return <ServiceError />

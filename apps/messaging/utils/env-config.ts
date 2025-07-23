@@ -16,6 +16,7 @@ const requiredInProduction: z.RefinementEffect<
   }
 }
 
+// biome-ignore lint/correctness/noUnusedVariables: legacy
 const requiredInDevelopment: z.RefinementEffect<
   string | undefined
 >["refinement"] = (value, ctx) => {

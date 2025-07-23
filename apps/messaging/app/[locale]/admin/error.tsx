@@ -14,7 +14,7 @@ export default function AdminError({
 }) {
   const analyticsClient = useAnalytics()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     analyticsClient.trackEvent({
       event: {

@@ -12,7 +12,7 @@ import SuccessForm from "./SuccessForm"
 
 type SendMessageStep = {
   key: string
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: legacy
   component: any
   isValid: (message: MessageState) => boolean
   next: string | null

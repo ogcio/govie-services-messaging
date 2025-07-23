@@ -21,6 +21,7 @@ export async function runLighthouseForURL(pageURL, opts, reportNameForFile) {
   scores["Best Practices"] = JSON.parse(json).categories["best-practices"].score
   scores.SEO = JSON.parse(json).categories.seo.score
 
+  // biome-ignore lint/correctness/noUnusedVariables: legacy
   const baselineScores = {
     Performance: 0.9,
     Accessibility: 0.9,

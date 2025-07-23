@@ -3,7 +3,7 @@ import { getSendMessageSchema } from "@/types/schemas"
 import { createMessages } from "./createMessages"
 
 export default async function action(
-  prevState:
+  _prevState:
     | { created?: number; errors?: Record<string, string>; schedule?: string }
     | undefined,
   formData: FormData,

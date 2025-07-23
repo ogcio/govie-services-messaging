@@ -24,7 +24,7 @@ export default function GlobalError(props: {
   const analyticsClient = useAnalytics()
   const locale = useLocale()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     analyticsClient.trackEvent({
       event: {

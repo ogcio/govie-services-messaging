@@ -7,8 +7,8 @@ import {
 import { createOrUpdateTemplate } from "./createOrUpdateTemplate"
 
 export default async (
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  prevState: { errors: Record<string, any> } | undefined,
+  // biome-ignore lint/suspicious/noExplicitAny: legacy
+  _prevState: { errors: Record<string, any> } | undefined,
   formData: FormData,
 ) => {
   const messageTemplateSchema = await getMessageTemplateSchema()
@@ -26,7 +26,7 @@ export default async (
   const messageTemplateContentSchema = await getMessageTemplateContentSchema()
 
   const contents: MessageTemplatePayload[] = []
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: legacy
   const errors: Record<string, any> = {}
 
   for (const language of languages) {

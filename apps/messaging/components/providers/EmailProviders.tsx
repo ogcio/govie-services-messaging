@@ -54,7 +54,7 @@ export default () => {
     deletedId: "",
   })
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     const doFetch = async () => {
       try {
@@ -84,7 +84,7 @@ export default () => {
     }
   }, [state.deletedId, providers])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if (providerFetchError) {
       toaster.create({

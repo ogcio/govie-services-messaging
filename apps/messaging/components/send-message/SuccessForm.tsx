@@ -24,7 +24,7 @@ export default () => {
   const { message, setMessage, setStep } = useContext(SendMessageContext)
   const analyticsClient = useAnalytics()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     analyticsClient.trackEvent({
       event: {

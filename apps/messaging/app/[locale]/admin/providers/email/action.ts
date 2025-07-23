@@ -3,8 +3,8 @@ import { getEmailProviderSchema } from "@/types/schemas"
 import { createOrUpdateEmailProvider } from "./createOrUpdateEmailProvider"
 
 export default async function action(
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  prevState: { errors: Record<string, any>; id?: string } | undefined,
+  // biome-ignore lint/suspicious/noExplicitAny: legacy
+  _prevState: { errors: Record<string, any>; id?: string } | undefined,
   formData: FormData,
 ) {
   const emailProviderSchema = await getEmailProviderSchema()

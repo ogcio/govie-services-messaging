@@ -41,7 +41,7 @@ export default () => {
   const [selectedSchedule, setSelectedSchedule] = useState("now")
   const analyticsClient = useAnalytics()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     analyticsClient.trackEvent({
       event: {
@@ -52,7 +52,7 @@ export default () => {
     })
   }, [])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if (state?.created === 0 && state?.errors) {
       toaster.create({
@@ -63,7 +63,7 @@ export default () => {
     }
   }, [state?.errors])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if ((state?.created ?? 0) > 0) {
       onStep(
