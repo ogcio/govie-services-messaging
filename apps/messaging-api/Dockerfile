@@ -30,12 +30,6 @@ RUN pnpm api:build
 FROM messaging-api-base-deps AS assembler
 WORKDIR /app
 
-ARG PORT
-
-ENV NODE_ENV=production
-ENV LOG_LEVEL=INFO
-ENV PORT=$PORT
-
 COPY --from=builder --chown=node:node /app/package.json /app/
 COPY --from=builder --chown=node:node /app/pnpm-*.yaml /app/
 COPY --from=builder --chown=node:node /app/apps/messaging-api/dist /app/apps/messaging-api/dist
@@ -47,7 +41,8 @@ RUN pnpm install --prod --frozen-lockfile && \
 FROM messaging-api-base-deps AS runner
 
 ENV NODE_ENV=production
-ENV LOG_LEVEL=trace
+ENV LOG_LEVEL=info
+ENV PORT=8002
 
 COPY --from=assembler /app /app
 
