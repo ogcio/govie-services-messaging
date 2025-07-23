@@ -35,8 +35,8 @@ WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY --from=builder /app/apps/messaging/.next/standalone ./
-COPY --from=builder /app/apps/messaging/public ./public
-COPY --from=builder /app/apps/messaging/.next/static ./.next/static
+COPY --from=builder /app/apps/messaging/public ./apps/messaging/public
+COPY --from=builder /app/apps/messaging/.next/static ./apps/messaging/.next/static
 
 ENV NODE_ENV=production
 ENV LOG_LEVEL=info
