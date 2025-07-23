@@ -2,7 +2,7 @@ trigger: none
 pr: none
 
 schedules: 
-- cron: '0 20 * * *'   # 8 pm daily test run
+- cron: '15 20 * * *'   # 8:15 pm daily test run
   branches: 
     include: 
     - dev
@@ -18,7 +18,7 @@ resources:
     - repository: pipeline-templates
       type: github
       name: ogcio/building-blocks-pipelines
-      ref: refs/tags/v0.5.19
+      ref: refs/tags/v0.5.21
       endpoint: ogcio
 
 stages:
@@ -27,7 +27,7 @@ stages:
       displayName: Run regression tests - ${{ serviceName }}
       pool: Openshift
       jobs:
-        - template: test/regression_test.yml@pipeline-templates
+        - template: test/pnpm_regression_test.yml@pipeline-templates
           parameters:
             serviceName: ${{ serviceName }}
             testPath: './apps/'
@@ -37,7 +37,7 @@ stages:
       displayName: Run non functional tests - ${{ serviceName }}
       pool: Openshift
       jobs:
-        - template: test/non_functional_test.yml@pipeline-templates
+        - template: test/pnpm_non_functional_test.yml@pipeline-templates
           parameters:
             serviceName: ${{ serviceName }}
             testPath: './apps/'
