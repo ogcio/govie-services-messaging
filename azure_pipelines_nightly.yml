@@ -31,7 +31,6 @@ stages:
           parameters:
             serviceName: ${{ serviceName }}
             testPath: './apps/'
-            nodeVersion: '22.x'
       condition: succeededOrFailed()
     - stage: Performance_Tests_${{ replace(serviceName, '-', '_') }}
       displayName: Run non functional tests - ${{ serviceName }}
@@ -41,6 +40,5 @@ stages:
           parameters:
             serviceName: ${{ serviceName }}
             testPath: './apps/'
-            nodeVersion: '22.x'
       condition: succeededOrFailed()
 
