@@ -24,7 +24,6 @@ ENV NEXT_PUBLIC_DASHBOARD_ADMIN_SERVICE_ENTRY_POINT=$NEXT_PUBLIC_DASHBOARD_ADMIN
 ENV NEXT_PUBLIC_PROFILE_ADMIN_SERVICE_ENTRY_POINT=$NEXT_PUBLIC_PROFILE_ADMIN_SERVICE_ENTRY_POINT
 ENV NODE_ENV=production
 ENV LOG_LEVEL=info
-ENV PORT=3002
 
 RUN pnpm --filter messaging build
 RUN pnpm prune --prod
@@ -38,6 +37,10 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY --from=builder /app/apps/messaging/.next/standalone ./
 COPY --from=builder /app/apps/messaging/public ./public
 COPY --from=builder /app/apps/messaging/.next/static ./.next/static
+
+ENV NODE_ENV=production
+ENV LOG_LEVEL=info
+ENV PORT=3002
 
 EXPOSE ${PORT}
 
