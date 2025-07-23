@@ -29,7 +29,7 @@ function buildServerUrl({
   const { baseUrl } = getCachedConfig()()
   try {
     return new URL(path, baseUrl)
-  } catch (e) {
+  } catch {
     getCommonLoggerWithEnvLevel().warn(
       {
         path,

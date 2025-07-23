@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server"
 import { defaultFormGap } from "utils/datetime"
 import TemplatesList from "@/components/message-templates/TemplatesList"
 
-export default async (props: { params: { locale: string } }) => {
+export default async (_props: { params: { locale: string } }) => {
   const t = await getTranslations("template.heading")
 
   return (

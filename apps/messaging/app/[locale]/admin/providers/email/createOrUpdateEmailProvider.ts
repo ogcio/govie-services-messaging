@@ -21,7 +21,7 @@ export const createOrUpdateEmailProvider = async ({
     "id"
   > & { id?: string }
   locale: string
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: legacy
 }): Promise<{ errors?: Record<string, any>; id?: string }> => {
   const client = BBClients.getMessagingClient()
   const url = buildServerUrl({ locale, url: providerRoutes.url })

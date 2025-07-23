@@ -4,7 +4,7 @@ import { Button, Paragraph, Stack } from "@govie-ds/react"
 import { useTranslations } from "next-intl"
 
 export default function ({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error & { digest?: string }

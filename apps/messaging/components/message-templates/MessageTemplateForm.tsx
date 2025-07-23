@@ -24,7 +24,7 @@ export const MessageTemplateForm = ({
   const locale = useLocale()
   const [languages, setlanguages] = useState<string[]>([])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: needed
   useEffect(() => {
     if (templates?.languages.length) {
       setlanguages(templates.languages)

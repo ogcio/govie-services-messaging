@@ -28,7 +28,7 @@
     "@govie-ds/react": "1.7.2",
     "@govie-ds/theme-govie": "1.4.0",
     "@ogcio/nextjs-analytics": "1.0.0",
-    "@ogcio/nextjs-auth": "^5.0.1",
+    "@ogcio/nextjs-auth": "^5.0.2",
     "@ogcio/nextjs-logging-wrapper": "14.2.10",
     "@ogcio/nextjs-o11y": "^0.0.1",
     "@ogcio/o11y-sdk-node": "^0.2.0",

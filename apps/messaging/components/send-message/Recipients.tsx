@@ -46,7 +46,7 @@ export default function Recipients() {
   const tSearch = useTranslations("search")
   const analyticsClient = useAnalytics()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     analyticsClient.trackEvent({
       event: {
@@ -60,7 +60,7 @@ export default function Recipients() {
   const [selectedRecipients, setSelectedRecipients] = useState<
     { id: string; publicName: string; email: string }[]
   >([])
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: legacy
   const [users, setUsers] = useState<any[]>([])
 
   const [isAdding, setIsAdding] = useState<boolean>(false)
@@ -120,7 +120,7 @@ export default function Recipients() {
             .at(-1),
         ) || 1
       setUsers(users)
-    } catch (err) {
+    } catch {
       toaster.create({
         position: {
           x: "right",
@@ -133,7 +133,7 @@ export default function Recipients() {
     }
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     fetchRecipients(searchParams)
   }, [searchParams])

@@ -25,21 +25,25 @@
     grid-column: span 6;
   }
   @media (max-width: 1024px) {
+    /* biome-ignore lint/style/noDescendingSpecificity: legacy */
     div {
       grid-column: span 6;
     }
   }
   @media (max-width: 768px) {
+    /* biome-ignore lint/style/noDescendingSpecificity: legacy */
     div {
       grid-column: span 8;
     }
   }
   @media (max-width: 640px) {
+    /* biome-ignore lint/style/noDescendingSpecificity: legacy */
     div {
       grid-column: span 6;
     }
   }
   @media (max-width: 480px) {
+    /* biome-ignore lint/style/noDescendingSpecificity: legacy */
     div {
       grid-column: span 4;
     }

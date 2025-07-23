@@ -33,7 +33,7 @@ export default function ComposeMessageMeta() {
   const locale = useLocale()
   const user = useUser()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     analyticsClient.trackEvent({
       event: {
@@ -51,7 +51,7 @@ export default function ComposeMessageMeta() {
 
   const { message, onStep } = useContext(SendMessageContext)
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  // biome-ignore lint/suspicious/noExplicitAny: legacy
   const [templateOptions, setTemplateOptions] = useState<any[]>([])
   const [lang, setLang] = useState<string>()
   const [templates, setTemplates] = useState<
@@ -61,7 +61,7 @@ export default function ComposeMessageMeta() {
   const [readyToRenderTemplate, setReadyToRenderTemplate] = useState(false)
   const asyncThrow = useAsyncThrow()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     const doFetch = async () => {
       try {
@@ -76,7 +76,7 @@ export default function ComposeMessageMeta() {
     doFetch()
   }, [user.currentOrganization?.id])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if (templateOptions?.length) {
       const doFetch = async () => {

@@ -61,7 +61,7 @@ export function MessageTable() {
     }))
 
     const doFetch = async () => {
-      const { data, error, metadata } = await loader({
+      const { data, metadata } = await loader({
         searchParams: {
           tab,
           search,

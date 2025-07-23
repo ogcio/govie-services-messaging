@@ -21,8 +21,8 @@ import { SubmitButton } from "@/components/SubmitButton"
 
 const EmailProviderForm = ({
   provider,
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 }: {
+  // biome-ignore lint/suspicious/noExplicitAny: legacy
   provider?: any
 }) => {
   const locale = useLocale()
@@ -35,7 +35,7 @@ const EmailProviderForm = ({
     undefined,
   )
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if (state?.id) {
       router.push("./")

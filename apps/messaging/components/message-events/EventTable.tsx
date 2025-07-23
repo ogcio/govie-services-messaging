@@ -12,7 +12,7 @@ import {
   toaster,
 } from "@govie-ds/react"
 import { usePathname, useSearchParams } from "next/navigation"
-import { useLocale, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import loader from "@/app/[locale]/admin/message-events/loader"
 import { formatDate } from "@/utils/datetime"
@@ -26,7 +26,6 @@ export default function EventTable() {
   const t = useTranslations("event")
   const searchParams = useSearchParams()
   const pathname = usePathname()
-  const locale = useLocale()
   const [events, setEvents] = useState<
     Awaited<ReturnType<typeof loader>>["data"]
   >([])
@@ -35,7 +34,7 @@ export default function EventTable() {
     Awaited<ReturnType<typeof loader>>["paging"] | undefined
   >()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     const doFetch = async () => {
       try {
@@ -59,7 +58,7 @@ export default function EventTable() {
 
         setEvents(data)
         setPaging(paging)
-      } catch (err) {
+      } catch {
         toaster.create({
           title: t("toast.title.serverError"),
           action: { label: t("label.tryAgain"), href: pathname },

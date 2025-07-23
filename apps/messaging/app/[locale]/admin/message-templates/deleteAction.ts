@@ -2,8 +2,7 @@
 
 import { BBClients } from "@/utils/building-blocks-sdk"
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export async function handleDeleteAction(prev: any, formData: FormData) {
+export async function handleDeleteAction(_prev: unknown, formData: FormData) {
   "use server"
 
   const id = formData.get("id") as string
