@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "pnpm -r dev 2>&1 | tee logs/dev.log",
     "build": "pnpm -r build",
-    "build:api": "pnpm --filter messaging-api build",
+    "api:build": "pnpm --filter messaging-api build",
+    "www:build": "pnpm --filter messaging build",
     "format": "pnpm -r format",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
@@ -36,5 +37,9 @@
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@logto/node": "2.5.5",
+    "@ogcio/building-blocks-sdk": "^0.2.45"
   }
 }
