@@ -35,7 +35,7 @@ COPY --from=builder --chown=node:node /app/pnpm-*.yaml /app/
 COPY --from=builder --chown=node:node /app/apps/messaging-api/dist /app/apps/messaging-api/dist
 COPY --from=builder --chown=node:node /app/apps/messaging-api/package*.json /app/apps/messaging-api/
 
-RUN pnpm install --prod --frozen-lockfile && \
+RUN pnpm install --prod --frozen-lockfile --shamefully-hoist && \
     rm /app/pnpm-*.yaml
 
 FROM messaging-api-base-deps AS runner
