@@ -34,6 +34,8 @@
     "@ogcio/o11y-sdk-node": "^0.2.0",
     "@ogcio/o11y-sdk-react": "^0.2.0",
     "@radix-ui/react-toast": "^1.2.2",
+    "@logto/node": "2.5.5",
+    "@ogcio/building-blocks-sdk": "^0.2.45",
     "dayjs": "^1.11.13",
     "next": "14.2.30",
     "next-intl": "^3.26.5",
