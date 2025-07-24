@@ -1,5 +1,5 @@
 "use server"
-import { getSendMessageSchema } from "@/types/schemas"
+import { getSendMessageSchema } from "@/types/schemas-server"
 import { createMessages } from "./createMessages"
 
 export default async function action(
