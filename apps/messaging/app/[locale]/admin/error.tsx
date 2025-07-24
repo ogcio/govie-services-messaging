@@ -2,7 +2,7 @@
 
 import { useAnalytics } from "@ogcio/nextjs-analytics"
 import { ANALYTICS } from "const/analytics"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import GenericPageError from "@/components/GenericPageError"
 
 export default function AdminError({
@@ -14,9 +14,10 @@ export default function AdminError({
 }) {
   const analyticsClient = useAnalytics()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
+  const trackEventRef = useRef(analyticsClient.trackEvent)
+
   useEffect(() => {
-    analyticsClient.trackEvent({
+    trackEventRef.current({
       event: {
         name: ANALYTICS.system.error.name,
         category: ANALYTICS.system.category,
