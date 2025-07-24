@@ -1,5 +1,5 @@
 "use server"
-import { getEmailProviderSchema } from "@/types/schemas"
+import { getEmailProviderSchema } from "@/types/schemas-server"
 import { createOrUpdateEmailProvider } from "./createOrUpdateEmailProvider"
 
 export default async function action(

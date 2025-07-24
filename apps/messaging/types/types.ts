@@ -1,6 +1,12 @@
-import type { z } from "zod"
-import type { getMessageTemplateContentSchema } from "@/types/schemas"
+import type { ZodError, z } from "zod"
+import type { getMessageTemplateContentSchema } from "@/types/schemas-server"
 import { LANG_EN, LANG_GA } from "@/types/shared"
+import type { baseMessageTemplateSchema } from "./schemas"
+
+// helper type for zod errors
+type FieldErrorsOf<T extends z.ZodTypeAny> = ReturnType<
+  ZodError<z.infer<T>>["flatten"]
+>["fieldErrors"]
 
 type MessageTemplateContentSchema = Awaited<
   ReturnType<typeof getMessageTemplateContentSchema>
@@ -19,7 +25,15 @@ type MessageTemplateFormData = {
   [LANG_GA]?: MessageTemplateContent
 }
 
-export type { MessageTemplateFormData, MessageTemplatePayload }
+type MessageTemplatePayloadError = FieldErrorsOf<
+  typeof baseMessageTemplateSchema
+>
+
+export type {
+  MessageTemplateFormData,
+  MessageTemplatePayload,
+  MessageTemplatePayloadError,
+}
 
 export type AppUser = {
   id: string

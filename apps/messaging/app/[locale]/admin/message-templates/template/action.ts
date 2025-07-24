@@ -1,16 +1,18 @@
 "use server"
-import type { MessageTemplatePayload } from "@/types/types"
+import type {
+  MessageTemplatePayload,
+  MessageTemplatePayloadError,
+} from "@/types/types"
 import {
   getMessageTemplateContentSchema,
   getMessageTemplateSchema,
-} from "../../../../../types/schemas"
+} from "../../../../../types/schemas-server"
 import { createOrUpdateTemplate } from "./createOrUpdateTemplate"
 
-export default async (
-  // biome-ignore lint/suspicious/noExplicitAny: legacy
-  _prevState: { errors: Record<string, any> } | undefined,
+export async function createOrUpdateTemplateAction(
+  _prevState: { errors: Record<string, MessageTemplatePayloadError> },
   formData: FormData,
-) => {
+) {
   const messageTemplateSchema = await getMessageTemplateSchema()
   const messageTemplateFields = messageTemplateSchema.safeParse({
     languages: formData.get("languages")?.toString().split(","),
@@ -26,8 +28,8 @@ export default async (
   const messageTemplateContentSchema = await getMessageTemplateContentSchema()
 
   const contents: MessageTemplatePayload[] = []
-  // biome-ignore lint/suspicious/noExplicitAny: legacy
-  const errors: Record<string, any> = {}
+
+  const errors: Record<string, MessageTemplatePayloadError> = {}
 
   for (const language of languages) {
     const { success, data, error } = messageTemplateContentSchema.safeParse({
