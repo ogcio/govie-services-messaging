@@ -65,37 +65,37 @@ export default function TemplatesList() {
   const [toDelete, setToDelete] = useState<{ id: string; name: string }>(
     deleteToDefault,
   )
-  const [state, deleteAction] = useFormState(handleDeleteAction, {
-    error: undefined,
-  })
+  const [formState, deleteAction] = useFormState(handleDeleteAction, {})
   const [isFetching, setIsFetching] = useState(true)
 
   const [searchText, setSearchText] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
-  const doFetch = useCallback(async (search?: string) => {
-    try {
-      setIsFetching(true)
-      const templates = await getTemplates({ search })
-      setTemplates(templates)
-    } catch (error) {
-      logger().error(error)
-      toaster.create({
-        title: t("toaster.title.serverError"),
-        dismissible: true,
-        duration: 10000,
-        action: {
-          href: pathname,
-          label: t("toaster.action.retry"),
-        },
-        variant: "danger",
-        position: { x: "right", y: "top" },
-      })
-    } finally {
-      setIsFetching(false)
-    }
-  }, [])
+  const doFetch = useCallback(
+    async (search?: string) => {
+      try {
+        setIsFetching(true)
+        const templates = await getTemplates({ search })
+        setTemplates(templates)
+      } catch (error) {
+        logger().error(error)
+        toaster.create({
+          title: t("toaster.title.serverError"),
+          dismissible: true,
+          duration: 10000,
+          action: {
+            href: pathname,
+            label: t("toaster.action.retry"),
+          },
+          variant: "danger",
+          position: { x: "right", y: "top" },
+        })
+      } finally {
+        setIsFetching(false)
+      }
+    },
+    [logger, t, pathname],
+  )
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value)
@@ -110,60 +110,69 @@ export default function TemplatesList() {
     await doFetch()
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
+  const didInitialFetch = useRef(false)
   useEffect(() => {
-    doFetch()
-  }, [])
+    if (didInitialFetch.current) {
+      return
+    }
+    didInitialFetch.current = true
 
-  // biome-ignore lint/suspicious/noExplicitAny: needed for unknown
-  const anyState = state as any
+    doFetch()
+  }, [doFetch])
+
   const lastDeletedId = useRef<string | undefined>()
   useEffect(() => {
     if (
-      anyState.deletedId &&
+      formState.deletedId &&
       toDelete.id &&
-      anyState.deletedId !== lastDeletedId.current
+      formState.deletedId !== lastDeletedId.current
     ) {
-      lastDeletedId.current = anyState.deletedId
+      lastDeletedId.current = formState.deletedId
       setIsDeleting(false)
       setTemplates((prev) => prev?.filter((t) => t.id !== toDelete.id))
       setToDelete(deleteToDefault)
     }
-  }, [anyState.deletedId, toDelete.id])
+  }, [formState.deletedId, toDelete.id])
 
   useEffect(() => {
-    if (anyState.error) {
+    if (formState.error) {
       setIsDeleting(false)
     }
-  }, [anyState.error])
+  }, [formState.error])
 
   const newid = searchParams.get("newid")
   const triggeredToaster = useRef(false)
 
   // go to send a message with created template pre-filled effect
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
-    if (newid && !triggeredToaster.current && templates?.length) {
-      const newTemplateName = templates
-        .find((t) => t.id === newid)
-        ?.contents.find((c) => c.language === locale || true)?.templateName
-      toaster.create({
-        title: t("toaster.title.newTemplate", {
-          name: newTemplateName ? ` '${newTemplateName}'` : "",
-        }),
-        dismissible: true,
-        duration: 10000,
-        action: {
-          href: `/${locale}/admin/send-a-message?templateId=${newid}`,
-          label: t("toaster.action.yes"),
-        },
-        variant: "success",
-        position: { x: "right", y: "top" },
-      })
-      triggeredToaster.current = true
-      router.replace(pathname)
+    if (!newid || triggeredToaster.current || !templates?.length) {
+      return
     }
-  }, [newid, templates?.length])
+
+    const newTemplate = templates.find((t) => t.id === newid)
+
+    const newTemplateContent =
+      newTemplate?.contents.find((c) => c.language === locale) ??
+      newTemplate?.contents.at(0)
+
+    const newTemplateName = newTemplateContent?.templateName
+
+    toaster.create({
+      title: t("toaster.title.newTemplate", {
+        name: newTemplateName ? ` '${newTemplateName}'` : "",
+      }),
+      dismissible: true,
+      duration: 10000,
+      action: {
+        href: `/${locale}/admin/send-a-message?templateId=${newid}`,
+        label: t("toaster.action.yes"),
+      },
+      variant: "success",
+      position: { x: "right", y: "top" },
+    })
+    triggeredToaster.current = true
+    router.replace(pathname)
+  }, [newid, templates?.length, t, templates, router.replace, pathname, locale])
 
   const handleDeleteClick = () => {
     setIsDeleting(true)
@@ -182,7 +191,7 @@ export default function TemplatesList() {
           {t("modal.delete.title", { name: toDelete.name })}
         </ModalTitle>
         <ModalBody>
-          {anyState.error && (
+          {formState.error && (
             <FormField error={{ text: t("modal.delete.error") }} />
           )}
           <Paragraph>{t("modal.delete.body")}</Paragraph>
