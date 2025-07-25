@@ -208,7 +208,10 @@
       "createButton": "Create",
       "ssl": "SSL",
       "isPrimary": "Primary",
-      "providers": "Providers"
+      "providers": "Providers",
+      "error": {
+        "server": "Sorry, we couldn't save your changes"
+      }
     }
   },
   "LandingPage": {

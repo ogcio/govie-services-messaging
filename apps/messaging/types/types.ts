@@ -1,7 +1,11 @@
 import type { ZodError, z } from "zod"
 import type { getMessageTemplateContentSchema } from "@/types/schemas-server"
 import { LANG_EN, LANG_GA } from "@/types/shared"
-import type { baseMessageTemplateSchema } from "./schemas"
+import type { BBClients } from "@/utils/building-blocks-sdk"
+import type {
+  baseEmailProviderSchema,
+  baseMessageTemplateSchema,
+} from "./schemas"
 
 // helper type for zod errors
 type FieldErrorsOf<T extends z.ZodTypeAny> = ReturnType<
@@ -28,11 +32,22 @@ type MessageTemplateFormData = {
 type MessageTemplatePayloadError = FieldErrorsOf<
   typeof baseMessageTemplateSchema
 >
+type EmailProviderPayloadError = FieldErrorsOf<typeof baseEmailProviderSchema>
+
+type EmailProviderApiPayload = Awaited<
+  ReturnType<
+    Awaited<
+      ReturnType<(typeof BBClients)["getMessagingClient"]>["getEmailProvider"]
+    >
+  >
+>["data"]
 
 export type {
   MessageTemplateFormData,
   MessageTemplatePayload,
   MessageTemplatePayloadError,
+  EmailProviderPayloadError,
+  EmailProviderApiPayload,
 }
 
 export type AppUser = {
