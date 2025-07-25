@@ -62,7 +62,4 @@ export const MessageStatus = ({
         return <Tag type='success' text={t("unseen")} />
     }
   }
-
-  // biome-ignore lint/complexity/noUselessFragments: legacy
-  return <></>
 }
