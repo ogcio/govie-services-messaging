@@ -3,7 +3,7 @@ FROM base-deps AS messaging-api-base-deps
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
-
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -G nodejs
 FROM messaging-api-base-deps AS builder
 WORKDIR /app
 
@@ -22,10 +22,10 @@ ENV NODE_ENV=production
 ENV LOG_LEVEL=info
 ENV PORT=8002
 
-COPY --from=builder /app/deploy/dist /app/apps/messaging-api/dist
-COPY --from=builder /app/deploy/node_modules /app/apps/messaging-api/node_modules
-COPY --from=builder /app/deploy/package.json /app/apps/messaging-api/
-COPY --from=builder /app/deploy/pnpm*.yaml /app/apps/messaging-api/
+COPY --from=builder --chown=node:node /app/deploy/dist /app/apps/messaging-api/dist
+COPY --from=builder --chown=node:node /app/deploy/node_modules /app/apps/messaging-api/node_modules
+COPY --from=builder --chown=node:node /app/deploy/package.json /app/apps/messaging-api/
+COPY --from=builder --chown=node:node /app/deploy/pnpm*.yaml /app/apps/messaging-api/
 
 EXPOSE ${PORT}
 

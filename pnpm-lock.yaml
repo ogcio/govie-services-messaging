@@ -8,13 +8,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@logto/node':
-        specifier: 2.5.5
-        version: 2.5.5
-      '@ogcio/building-blocks-sdk':
-        specifier: ^0.2.45
-        version: 0.2.45(@logto/node@2.5.5)(typescript@5.8.3)
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.1.2
@@ -61,12 +54,18 @@ importers:
       '@govie-ds/theme-govie':
         specifier: 1.4.0
         version: 1.4.0
+      '@logto/node':
+        specifier: 2.5.5
+        version: 2.5.5
+      '@ogcio/building-blocks-sdk':
+        specifier: ^0.2.45
+        version: 0.2.45(@logto/node@2.5.5)(typescript@5.8.3)
       '@ogcio/nextjs-analytics':
         specifier: 1.0.0
         version: 1.0.0
       '@ogcio/nextjs-auth':
         specifier: ^5.0.2
-        version: 5.0.2(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 5.0.3(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@ogcio/nextjs-logging-wrapper':
         specifier: 14.2.10
         version: 14.2.10(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -197,9 +196,15 @@ importers:
       '@fastify/under-pressure':
         specifier: ^9.0.3
         version: 9.0.3
+      '@logto/node':
+        specifier: 2.5.5
+        version: 2.5.5
       '@ogcio/api-auth':
         specifier: ^5.1.1
         version: 5.1.1
+      '@ogcio/building-blocks-sdk':
+        specifier: ^0.2.45
+        version: 0.2.45(@logto/node@2.5.5)(typescript@5.8.3)
       '@ogcio/fastify-error-handler':
         specifier: ^5.2.1
         version: 5.2.1
@@ -1420,8 +1425,8 @@ packages:
   '@ogcio/nextjs-analytics@1.0.0':
     resolution: {integrity: sha512-AxNdN3d+PXrRjtDmBQXcMR+BoB6fnFgZOo2O6HJ7m+Q9RNERApyXYEEHMKdz80sXdLFx8G5kEBCp2jPuzvikyQ==}
 
-  '@ogcio/nextjs-auth@5.0.2':
-    resolution: {integrity: sha512-7lOxgqbH95Qq0IQtOAPJ9XpBWQmr1AQkCuJG2bJUOvybnq7HpaqnVgGDk6IiZE4aroyzSayuzFVC6+R7+E3qdw==}
+  '@ogcio/nextjs-auth@5.0.3':
+    resolution: {integrity: sha512-YwSwnVDHzr2X6fHueQFl8trb7z9oaqkZ+MEOZqb/6maVJ66X8lxLX92mLJxZtAH0pbosknoxfcclsQB6A4bBxg==}
     peerDependencies:
       next: '>=14.2'
       react: '>=18.3'
@@ -7659,12 +7664,13 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@ogcio/nextjs-auth@5.0.2(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@ogcio/nextjs-auth@5.0.3(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@logto/next': 3.5.0(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@ogcio/nextjs-logging-wrapper': 14.2.10(next@14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@ogcio/shared-errors': 1.1.0
       http-errors: 2.0.0
+      jose: 5.10.0
       next: 14.2.30(@babel/core@7.28.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.54.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
