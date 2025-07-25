@@ -44,6 +44,14 @@ type EmailProviderApiPayload = Awaited<
   >
 >["data"]
 
+type TemplateOptionApiPayload = Awaited<
+  ReturnType<
+    Awaited<
+      ReturnType<(typeof BBClients)["getMessagingClient"]>["getTemplates"]
+    >
+  >
+>["data"][number]
+
 export type {
   MessageTemplateFormData,
   MessageTemplatePayload,
@@ -51,6 +59,7 @@ export type {
   EmailProviderPayloadError,
   SendMessagePayloadError,
   EmailProviderApiPayload,
+  TemplateOptionApiPayload,
 }
 
 export type AppUser = {

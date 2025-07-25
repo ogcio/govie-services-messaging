@@ -4,7 +4,6 @@ import { FullWidthContainer } from "../containers"
 export const OrganizationSelector = ({
   title,
   description,
-  actionTitle: _actionTitle,
   organizations,
   defaultOrganization,
   handleChange,
@@ -22,8 +21,7 @@ export const OrganizationSelector = ({
   disabled?: boolean
 }) => {
   if (organizations.length < 1) {
-    // biome-ignore lint/complexity/noUselessFragments: legacy
-    return <></>
+    return null
   }
 
   return (

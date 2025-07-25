@@ -20,9 +20,9 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { defaultFormGap } from "utils/datetime"
 import { getTemplate } from "@/app/[locale]/admin/send-a-message/getTemplate"
 import { getTemplatesAndLanguage } from "@/app/[locale]/admin/send-a-message/getTemplatesAndLanguage"
+import type { TemplateOptionApiPayload } from "@/types/types"
 import { ANALYTICS } from "../../const/analytics"
 import { SubmitButton } from "../SubmitButton"
-import { useUser } from "../UserContext"
 import { SendMessageContext } from "./SendMessageContext"
 
 export default function ComposeMessageMeta() {
@@ -31,9 +31,7 @@ export default function ComposeMessageMeta() {
   const router = useRouter()
   const analyticsClient = useAnalytics()
   const locale = useLocale()
-  const user = useUser()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     analyticsClient.trackEvent({
       event: {
@@ -42,7 +40,7 @@ export default function ComposeMessageMeta() {
         action: ANALYTICS.message.stepInitial.action,
       },
     })
-  }, [])
+  }, [analyticsClient.trackEvent])
 
   const logger = useCallback(() => {
     return getCommonLogger("error")
@@ -51,8 +49,9 @@ export default function ComposeMessageMeta() {
 
   const { message, onStep } = useContext(SendMessageContext)
 
-  // biome-ignore lint/suspicious/noExplicitAny: legacy
-  const [templateOptions, setTemplateOptions] = useState<any[]>([])
+  const [templateOptions, setTemplateOptions] = useState<
+    TemplateOptionApiPayload[]
+  >([])
   const [lang, setLang] = useState<string>()
   const [templates, setTemplates] = useState<
     Record<string, Awaited<ReturnType<typeof getTemplate>>>
@@ -61,7 +60,6 @@ export default function ComposeMessageMeta() {
   const [readyToRenderTemplate, setReadyToRenderTemplate] = useState(false)
   const asyncThrow = useAsyncThrow()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     const doFetch = async () => {
       try {
@@ -74,9 +72,8 @@ export default function ComposeMessageMeta() {
     }
 
     doFetch()
-  }, [user.currentOrganization?.id])
+  }, [asyncThrow])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if (templateOptions?.length) {
       const doFetch = async () => {
@@ -84,6 +81,9 @@ export default function ComposeMessageMeta() {
           const templateId =
             templateOptions.find((o) => o.id === searchParams.get("templateId"))
               ?.id || templateOptions.at(0)?.id
+          if (!templateId) {
+            throw new Error("no template id")
+          }
           const template = await getTemplate(templateId)
           setSelectedTemplate(templateId)
           setTemplates((prev) => ({
@@ -101,7 +101,14 @@ export default function ComposeMessageMeta() {
       }
       doFetch()
     }
-  }, [templateOptions?.length])
+  }, [
+    templateOptions,
+    asyncThrow,
+    logger,
+    pathname,
+    router.replace,
+    searchParams,
+  ])
 
   const handleFormSubmit = useMemo(() => {
     return async (e: React.ChangeEvent<HTMLFormElement>) => {

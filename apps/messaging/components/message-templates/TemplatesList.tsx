@@ -143,7 +143,6 @@ export default function TemplatesList() {
   const newid = searchParams.get("newid")
   const triggeredToaster = useRef(false)
 
-  // go to send a message with created template pre-filled effect
   useEffect(() => {
     if (!newid || triggeredToaster.current || !templates?.length) {
       return
