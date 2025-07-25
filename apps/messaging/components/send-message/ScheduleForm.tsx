@@ -41,7 +41,6 @@ export default () => {
   const [selectedSchedule, setSelectedSchedule] = useState("now")
   const analyticsClient = useAnalytics()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     analyticsClient.trackEvent({
       event: {
@@ -50,9 +49,8 @@ export default () => {
         action: ANALYTICS.message.stepSchedule.action,
       },
     })
-  }, [])
+  }, [analyticsClient.trackEvent])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if (state?.created === 0 && state?.errors) {
       toaster.create({
@@ -61,22 +59,20 @@ export default () => {
         variant: "danger",
       })
     }
-  }, [state?.errors])
+  }, [state?.created, state?.errors, t])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if ((state?.created ?? 0) > 0) {
       onStep(
         {
           ...message,
           schedule: state?.schedule,
-          errors: state?.errors,
           successfulMessagesCreated: state?.created,
         },
         "next",
       )
     }
-  }, [state?.created])
+  }, [state?.created, state?.schedule, onStep, message])
 
   return (
     <form

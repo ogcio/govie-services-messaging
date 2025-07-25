@@ -5,6 +5,7 @@ import type { BBClients } from "@/utils/building-blocks-sdk"
 import type {
   baseEmailProviderSchema,
   baseMessageTemplateSchema,
+  baseSendMessageSchema,
 } from "./schemas"
 
 // helper type for zod errors
@@ -33,6 +34,7 @@ type MessageTemplatePayloadError = FieldErrorsOf<
   typeof baseMessageTemplateSchema
 >
 type EmailProviderPayloadError = FieldErrorsOf<typeof baseEmailProviderSchema>
+type SendMessagePayloadError = FieldErrorsOf<typeof baseSendMessageSchema>
 
 type EmailProviderApiPayload = Awaited<
   ReturnType<
@@ -47,6 +49,7 @@ export type {
   MessageTemplatePayload,
   MessageTemplatePayloadError,
   EmailProviderPayloadError,
+  SendMessagePayloadError,
   EmailProviderApiPayload,
 }
 

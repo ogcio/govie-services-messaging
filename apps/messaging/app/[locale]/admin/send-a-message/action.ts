@@ -1,10 +1,11 @@
 "use server"
 import { getSendMessageSchema } from "@/types/schemas-server"
+import type { SendMessagePayloadError } from "@/types/types"
 import { createMessages } from "./createMessages"
 
 export default async function action(
   _prevState:
-    | { created?: number; errors?: Record<string, string>; schedule?: string }
+    | { created?: number; errors?: SendMessagePayloadError; schedule?: string }
     | undefined,
   formData: FormData,
 ) {
@@ -16,13 +17,10 @@ export default async function action(
   if (!sendMessageFields.success) {
     return {
       created: 0,
-      errors: Object.fromEntries(
-        Object.entries(sendMessageFields.error.flatten().fieldErrors).map(
-          ([key, value]) => [key, value?.[0] || "Invalid field"],
-        ),
-      ),
+      errors: sendMessageFields.error.flatten().fieldErrors,
     }
   }
+
   const { created, errors } = await createMessages(sendMessageFields.data)
   const schedule = formData.get("schedule")?.toString() || ""
 

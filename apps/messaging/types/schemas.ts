@@ -1,3 +1,4 @@
+import { MessageSecurityLevel } from "const/messaging"
 import z from "zod"
 
 const messageTemplateContentShape = {
@@ -24,9 +25,20 @@ const emailProviderContentShape = {
 
 const baseEmailProviderSchema = z.object(emailProviderContentShape)
 
+const sendMessageContentShape = {
+  templateMetaId: z.string(),
+  templateName: z.string(),
+  userIds: z.string(),
+  schedule: z.string(),
+  securityLevel: z.nativeEnum(MessageSecurityLevel),
+}
+const baseSendMessageSchema = z.object(sendMessageContentShape)
+
 export {
   messageTemplateContentShape,
   baseMessageTemplateSchema,
   baseEmailProviderSchema,
   emailProviderContentShape,
+  sendMessageContentShape,
+  baseSendMessageSchema,
 }

@@ -1,10 +1,10 @@
 "use server"
-import { MessageSecurityLevel } from "const/messaging"
 import { getTranslations } from "next-intl/server"
 import { z } from "zod"
 import {
   emailProviderContentShape,
   messageTemplateContentShape,
+  sendMessageContentShape,
 } from "./schemas"
 
 const getMessageTemplateSchema = async () => {
@@ -62,24 +62,26 @@ const getSendMessageSchema = async () => {
   const t = await getTranslations("formErrors.fields")
 
   return z.object({
-    templateMetaId: z.string({
-      required_error: t("templateMetaId"),
-    }),
-    templateName: z.string({
-      required_error: t("templateName"),
-    }),
-    userIds: z
-      .string()
+    templateMetaId: sendMessageContentShape.templateMetaId.refine(
+      (id) => Boolean(id),
+      t("templateMetaId"),
+    ),
+    templateName: sendMessageContentShape.templateName.refine(
+      (name) => Boolean(name),
+      t("templateName"),
+    ),
+    userIds: sendMessageContentShape.userIds
       .transform((val) => val.split(","))
       .pipe(
         z.array(z.string()).min(1, {
           message: t("recipients"),
         }),
       ),
-    schedule: z.string({
-      required_error: t("schedule"),
-    }),
-    securityLevel: z.nativeEnum(MessageSecurityLevel),
+    schedule: sendMessageContentShape.schedule.refine(
+      (name) => Boolean(name),
+      t("templateName"),
+    ),
+    securityLevel: sendMessageContentShape.securityLevel,
   })
 }
 
