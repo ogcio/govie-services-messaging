@@ -2,7 +2,10 @@
 import { MessageSecurityLevel } from "const/messaging"
 import { getTranslations } from "next-intl/server"
 import { z } from "zod"
-import { messageTemplateContentShape } from "./schemas"
+import {
+  emailProviderContentShape,
+  messageTemplateContentShape,
+} from "./schemas"
 
 const getMessageTemplateSchema = async () => {
   await getTranslations("formErrors.messageTemplate")
@@ -34,19 +37,24 @@ const getEmailProviderSchema = async () => {
   const t = await getTranslations("formErrors.emailProvider")
 
   return z.object({
-    id: z.string().optional(),
-    providerName: z.string().min(1, { message: t("name") }),
-    smtpHost: z.string().min(1, { message: t("host") }),
-    smtpPort: z.number().min(1, { message: t("port") }),
-    username: z.string().min(1, { message: t("username") }),
-    password: z.string().min(1, { message: t("password") }),
-    fromAddress: z
-      .string()
+    id: emailProviderContentShape.id.optional(),
+    providerName: emailProviderContentShape.providerName.min(1, {
+      message: t("name"),
+    }),
+    smtpHost: emailProviderContentShape.smtpHost.min(1, { message: t("host") }),
+    smtpPort: emailProviderContentShape.smtpPort.min(1, { message: t("port") }),
+    username: emailProviderContentShape.username.min(1, {
+      message: t("username"),
+    }),
+    password: emailProviderContentShape.password.min(1, {
+      message: t("password"),
+    }),
+    fromAddress: emailProviderContentShape.fromAddress
       .min(1, { message: t("fromAddress") })
       .email(t("invalidEmail")),
-    throttle: z.number().optional(),
-    ssl: z.boolean().default(false),
-    isPrimary: z.boolean().default(false),
+    throttle: emailProviderContentShape.throttle.optional(),
+    ssl: emailProviderContentShape.ssl.default(false),
+    isPrimary: emailProviderContentShape.isPrimary.default(false),
   })
 }
 

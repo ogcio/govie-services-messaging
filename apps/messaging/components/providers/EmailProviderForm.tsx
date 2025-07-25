@@ -18,12 +18,12 @@ import { defaultFormGap } from "utils/datetime"
 import createOrUpdateEmailProviderAction from "@/app/[locale]/admin/providers/email/action"
 import { BackLink } from "@/components/BackButton"
 import { SubmitButton } from "@/components/SubmitButton"
+import type { EmailProviderApiPayload } from "@/types/types"
 
 const EmailProviderForm = ({
   provider,
 }: {
-  // biome-ignore lint/suspicious/noExplicitAny: legacy
-  provider?: any
+  provider?: EmailProviderApiPayload
 }) => {
   const locale = useLocale()
   const router = useRouter()
@@ -35,12 +35,11 @@ const EmailProviderForm = ({
     undefined,
   )
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     if (state?.id) {
       router.push("./")
     }
-  }, [state?.id])
+  }, [state?.id, router])
 
   useEffect(() => {
     if (state?.errors?.server) {
@@ -80,7 +79,7 @@ const EmailProviderForm = ({
           label={{ text: t("nameLabel"), htmlFor: "providerName" }}
           error={
             state?.errors?.providerName
-              ? { text: state?.errors?.providerName }
+              ? { text: state?.errors?.providerName.join(", ") }
               : undefined
           }
         >
@@ -97,7 +96,7 @@ const EmailProviderForm = ({
           label={{ text: t("fromAddressLabel"), htmlFor: "fromAddress" }}
           error={
             state?.errors?.fromAddress
-              ? { text: state?.errors?.fromAddress }
+              ? { text: state?.errors?.fromAddress.join(", ") }
               : undefined
           }
         >
@@ -114,7 +113,7 @@ const EmailProviderForm = ({
           label={{ text: t("hostLabel"), htmlFor: "smtpHost" }}
           error={
             state?.errors?.smtpHost
-              ? { text: state?.errors?.smtpHost }
+              ? { text: state?.errors?.smtpHost.join(", ") }
               : undefined
           }
         >
@@ -131,7 +130,7 @@ const EmailProviderForm = ({
           label={{ text: t("portLabel"), htmlFor: "smtpPort" }}
           error={
             state?.errors?.smtpPort
-              ? { text: state?.errors?.smtpPort }
+              ? { text: state?.errors?.smtpPort.join(", ") }
               : undefined
           }
         >
@@ -169,7 +168,7 @@ const EmailProviderForm = ({
           label={{ text: t("usernameLabel"), htmlFor: "username" }}
           error={
             state?.errors?.username
-              ? { text: state?.errors?.username }
+              ? { text: state?.errors?.username.join(", ") }
               : undefined
           }
         >
@@ -186,7 +185,7 @@ const EmailProviderForm = ({
           label={{ text: t("passwordLabel"), htmlFor: "password" }}
           error={
             state?.errors?.password
-              ? { text: state?.errors?.password }
+              ? { text: state?.errors?.password.join(", ") }
               : undefined
           }
         >

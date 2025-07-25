@@ -1,12 +1,16 @@
 "use server"
+import { getTranslations } from "next-intl/server"
 import { getEmailProviderSchema } from "@/types/schemas-server"
+import type { EmailProviderPayloadError } from "@/types/types"
 import { createOrUpdateEmailProvider } from "./createOrUpdateEmailProvider"
 
 export default async function action(
-  // biome-ignore lint/suspicious/noExplicitAny: legacy
-  _prevState: { errors: Record<string, any>; id?: string } | undefined,
+  _prevState:
+    | { errors?: EmailProviderPayloadError & { server?: string }; id?: string }
+    | undefined,
   formData: FormData,
 ) {
+  const t = await getTranslations("settings.EmailProvider")
   const emailProviderSchema = await getEmailProviderSchema()
   const emailProviderFields = emailProviderSchema.safeParse({
     id: formData.get("id")?.toString(),
@@ -22,19 +26,21 @@ export default async function action(
   })
 
   if (!emailProviderFields.success) {
-    const errors: Record<string, string> = {}
-    const fieldErrors = emailProviderFields.error.flatten().fieldErrors
-    for (const key of Object.keys(fieldErrors)) {
-      errors[key] = fieldErrors[key].at(0)
-    }
+    const errors = emailProviderFields.error.flatten().fieldErrors
     return { errors }
   }
 
-  return await createOrUpdateEmailProvider({
+  const { errors, id } = await createOrUpdateEmailProvider({
     provider: {
       ...emailProviderFields.data,
       type: "email",
     },
     locale: "en",
   })
+
+  if (errors || !id) {
+    return { errors: { server: t("error.server") } }
+  }
+
+  return { id }
 }

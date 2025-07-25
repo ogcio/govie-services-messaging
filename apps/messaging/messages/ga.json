@@ -208,7 +208,10 @@
       "createButton": "Cruthaigh",
       "ssl": "SSL",
       "isPrimary": "Príomha",
-      "providers": "Soláthraithe"
+      "providers": "Soláthraithe",
+      "error": {
+        "server": "Tá brón orainn, níor éirigh linn do chuid athruithe a shábháil"
+      }
     }
   },
   "LandingPage": {
