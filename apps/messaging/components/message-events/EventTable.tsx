@@ -34,21 +34,29 @@ export default function EventTable() {
     Awaited<ReturnType<typeof loader>>["paging"] | undefined
   >()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
+  const search = searchParams.get("search")?.toString() || undefined
+  const dateFrom = searchParams.get("dateFrom")?.toString() || undefined
+  const dateTo = searchParams.get("dateTo")?.toString() || undefined
+  const page = Number(searchParams.get("page")) || undefined
+  const size = Number(searchParams.get("size")) || undefined
+  const statusRaw = searchParams.get("status")?.toString()
+  const status = isStatus(statusRaw) ? statusRaw : undefined
+
+  const serverErrorToasterLabel = t("toast.title.serverError")
+  const serverErrorToasterActionLabel = t("label.tryAgain")
+
   useEffect(() => {
     const doFetch = async () => {
       try {
         setIsFetching(true)
-        const status = searchParams.get("status")?.toString()
-
         const { data, error, paging } = await loader({
           searchParams: {
-            search: searchParams.get("search")?.toString() || undefined,
-            dateFrom: searchParams.get("dateFrom")?.toString() || undefined,
-            dateTo: searchParams.get("dateTo")?.toString() || undefined,
-            page: Number(searchParams.get("page")) || undefined,
-            size: Number(searchParams.get("size")) || undefined,
-            status: isStatus(status) ? status : undefined,
+            search,
+            dateFrom,
+            dateTo,
+            page,
+            size,
+            status,
           },
         })
 
@@ -60,8 +68,8 @@ export default function EventTable() {
         setPaging(paging)
       } catch {
         toaster.create({
-          title: t("toast.title.serverError"),
-          action: { label: t("label.tryAgain"), href: pathname },
+          title: serverErrorToasterLabel,
+          action: { label: serverErrorToasterActionLabel, href: pathname },
           dismissible: true,
           duration: 5000,
           position: { x: "right", y: "top" },
@@ -71,8 +79,19 @@ export default function EventTable() {
         setIsFetching(false)
       }
     }
+
     doFetch()
-  }, [searchParams])
+  }, [
+    search,
+    dateFrom,
+    dateTo,
+    page,
+    size,
+    status,
+    pathname,
+    serverErrorToasterActionLabel,
+    serverErrorToasterLabel,
+  ])
 
   return (
     <>

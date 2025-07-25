@@ -24,7 +24,6 @@ export default function GlobalError(props: {
   const analyticsClient = useAnalytics()
   const locale = useLocale()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: legacy
   useEffect(() => {
     analyticsClient.trackEvent({
       event: {
@@ -33,7 +32,7 @@ export default function GlobalError(props: {
         action: ANALYTICS.system.error.action,
       },
     })
-  }, [])
+  }, [analyticsClient.trackEvent])
 
   return (
     <html lang={locale}>
