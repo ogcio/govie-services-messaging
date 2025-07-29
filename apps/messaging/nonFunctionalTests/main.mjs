@@ -23,7 +23,12 @@ async function runCitizenTests() {
       width: 1200,
       height: 900,
     },
-    chromeFlags: ["--headless", "--disable-mobile-emulation"],
+    chromeFlags: [
+      "--headless",
+      "--disable-mobile-emulation",
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+    ],
   }
 
   const chrome = await chromeLauncher.launch(opts)
@@ -53,9 +58,9 @@ async function runCitizenTests() {
     await runA11yForURL(browser, messageExample, opts, "example-message")
 
     // Run Lighthouse tests sequentially to avoid conflicts
-    await runLighthouseForURL(unread, opts, "unread-messages")
-    await runLighthouseForURL(all, opts, "all-messages")
-    await runLighthouseForURL(messageExample, opts, "messageExample")
+    await runLighthouseForURL(browser, unread, opts, "unread-messages")
+    await runLighthouseForURL(browser, all, opts, "all-messages")
+    await runLighthouseForURL(browser, messageExample, opts, "messageExample")
 
     console.log("=== CITIZEN TESTS COMPLETED ===")
   } finally {
@@ -74,7 +79,12 @@ async function runAdminTests() {
       width: 1200,
       height: 900,
     },
-    chromeFlags: ["--headless", "--disable-mobile-emulation"],
+    chromeFlags: [
+      "--headless",
+      "--disable-mobile-emulation",
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+    ],
   }
 
   const chrome = await chromeLauncher.launch(opts)
@@ -127,13 +137,29 @@ async function runAdminTests() {
     )
 
     // Run Lighthouse tests sequentially to avoid conflicts
-    await runLighthouseForURL(adminSend, opts, "admin-send-a-message")
-    await runLighthouseForURL(adminTemplates, opts, "admin-templates")
-    await runLighthouseForURL(adminNewTemplate, opts, "admin-new-template")
-    await runLighthouseForURL(adminProviders, opts, "admin-providers")
-    await runLighthouseForURL(adminNewProvider, opts, "admin-new-provider")
-    await runLighthouseForURL(adminMessageEvents, opts, "admin-message-events")
+    await runLighthouseForURL(browser, adminSend, opts, "admin-send-a-message")
+    await runLighthouseForURL(browser, adminTemplates, opts, "admin-templates")
     await runLighthouseForURL(
+      browser,
+      adminNewTemplate,
+      opts,
+      "admin-new-template",
+    )
+    await runLighthouseForURL(browser, adminProviders, opts, "admin-providers")
+    await runLighthouseForURL(
+      browser,
+      adminNewProvider,
+      opts,
+      "admin-new-provider",
+    )
+    await runLighthouseForURL(
+      browser,
+      adminMessageEvents,
+      opts,
+      "admin-message-events",
+    )
+    await runLighthouseForURL(
+      browser,
       adminEventExample,
       opts,
       "admin-message-event-example",
@@ -147,13 +173,18 @@ async function runAdminTests() {
 }
 
 async function main() {
-  // Run citizen tests with fresh browser
-  await runCitizenTests()
+  try {
+    // Run citizen tests with fresh browser
+    await runCitizenTests()
 
-  // Run admin tests with fresh browser
-  await runAdminTests()
+    // Run admin tests with fresh browser
+    await runAdminTests()
 
-  console.log("=== ALL TESTS COMPLETED SUCCESSFULLY ===")
+    console.log("=== ALL TESTS COMPLETED SUCCESSFULLY ===")
+  } catch (error) {
+    console.error("Test execution failed:", error)
+    process.exit(1)
+  }
 }
 
 await main()
