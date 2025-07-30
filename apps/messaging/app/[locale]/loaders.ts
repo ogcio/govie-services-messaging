@@ -11,7 +11,10 @@ import { AuthenticationFactory } from "@/utils/authentication-factory"
 import { buildLoginUrlWithPostLoginRedirect } from "@/utils/logto-config"
 import { BBClients } from "@/utils/building-blocks-sdk"
 import { type ConsentStatus, ConsentStatuses } from "@/components/consent/types"
-import { CONSENT_SUBJECT } from "@/components/consent/const"
+import {
+  CONSENT_ENABLED_FLAG,
+  CONSENT_SUBJECT,
+} from "@/components/consent/const"
 import { setConsentToPending } from "./consent/actions"
 
 export const requireUser = async (): Promise<AppUser> => {
@@ -88,13 +91,32 @@ export const requireProfile = async ({
   userId,
 }: {
   userId: string
-}): Promise<{ profile: ProfilePayload; consentStatus: ConsentStatus }> => {
+}): Promise<{
+  profile: ProfilePayload
+  consentStatus: ConsentStatus
+  isConsentEnabled: boolean
+}> => {
   const profile = await BBClients.getProfileClient().getProfile(userId)
   if (profile.error) {
     throw new Error("profile error")
   }
   if (!profile.data) {
     throw new Error("profile not found")
+  }
+  // TODO: remove this once consent is ready to be deployed
+  const isConsentEnabled =
+    await BBClients.getFeatureFlagsClient().isFlagEnabled(
+      CONSENT_ENABLED_FLAG,
+      {
+        userId,
+      },
+    )
+  if (!isConsentEnabled) {
+    return {
+      profile: profile.data,
+      consentStatus: ConsentStatuses.Undefined,
+      isConsentEnabled,
+    }
   }
   // Consent: if the profile has no consent status or a consent status of undefined
   // for the messaging service, set the consent status to pending
@@ -104,5 +126,9 @@ export const requireProfile = async ({
     await setConsentToPending()
   }
 
-  return { profile: profile.data, consentStatus: ConsentStatuses.Pending }
+  return {
+    profile: profile.data,
+    consentStatus: ConsentStatuses.Pending,
+    isConsentEnabled: true,
+  }
 }

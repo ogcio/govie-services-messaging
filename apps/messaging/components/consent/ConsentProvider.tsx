@@ -31,11 +31,13 @@ export const ConsentProvider = ({
   isPublicServant,
   consentStatus,
   preferredLanguage,
+  isConsentEnabled,
 }: {
   children: React.ReactNode
   isPublicServant: boolean
   consentStatus: ConsentStatus
   preferredLanguage: typeof LANG_EN | typeof LANG_GA
+  isConsentEnabled: boolean
 }) => {
   const hasValidConsent =
     consentStatus === ConsentStatuses.OptedIn ||
@@ -44,7 +46,9 @@ export const ConsentProvider = ({
   const searchParams = useSearchParams()
   const shouldForceShowModal = searchParams.get("force-consent") === "1"
   const shouldShowModalToCitizen =
-    !isPublicServant && (!hasValidConsent || shouldForceShowModal)
+    !isPublicServant &&
+    isConsentEnabled &&
+    (!hasValidConsent || shouldForceShowModal)
 
   const [isConsentModalOpen, setIsConsentModalOpen] = useState(
     shouldShowModalToCitizen,

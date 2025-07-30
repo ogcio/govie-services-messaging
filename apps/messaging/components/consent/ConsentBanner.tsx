@@ -4,10 +4,16 @@ import { Alert, Link } from "@govie-ds/react"
 import { useTranslations } from "next-intl"
 import { useConsent } from "./ConsentProvider"
 
-export const ConsentBanner = ({ profileUrl }: { profileUrl: string }) => {
+export const ConsentBanner = ({
+  profileUrl,
+  isConsentEnabled,
+}: {
+  profileUrl: string
+  isConsentEnabled: boolean
+}) => {
   const t = useTranslations("home")
   const { isOptedOut } = useConsent()
-  if (!isOptedOut) {
+  if (!isOptedOut || !isConsentEnabled) {
     return null
   }
   return (

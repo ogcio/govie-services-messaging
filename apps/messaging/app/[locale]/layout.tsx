@@ -32,7 +32,9 @@ export default async ({
   params: { locale: string }
 }) => {
   const user = await requireUser()
-  const { profile, consentStatus } = await requireProfile({ userId: user.id })
+  const { profile, consentStatus, isConsentEnabled } = await requireProfile({
+    userId: user.id,
+  })
   const t = await getTranslations("home")
   const config = getCachedConfig()()
 
@@ -58,6 +60,7 @@ export default async ({
                 isPublicServant={user.isPublicServant}
                 consentStatus={consentStatus}
                 preferredLanguage={profile.preferredLanguage}
+                isConsentEnabled={isConsentEnabled}
               >
                 <ToastProvider />
                 <PageHeader
@@ -79,7 +82,10 @@ export default async ({
                       aria-label={t("arialabel.mainContent")}
                     >
                       <FullWidthContainer>
-                        <ConsentBanner profileUrl={config.profileUrl} />
+                        <ConsentBanner
+                          profileUrl={config.profileUrl}
+                          isConsentEnabled={isConsentEnabled}
+                        />
                         {children}
                       </FullWidthContainer>
                     </Stack>
