@@ -14,12 +14,9 @@ import {
 import { PageHeader } from "@/components/navigation/PageHeader"
 import { UserProvider } from "@/components/UserContext"
 import favicon from "@/public/favicon.ico"
-import { BBClients } from "@/utils/building-blocks-sdk"
 import { getCachedConfig } from "@/utils/env-config"
-import { requireUser } from "./loaders"
+import { requireProfile, requireUser } from "./loaders"
 import { ConsentProvider } from "@/components/consent/ConsentProvider"
-import { ConsentStatuses } from "@/components/consent/types"
-import { CONSENT_SUBJECT } from "@/components/consent/const"
 import { ConsentBanner } from "@/components/consent/ConsentBanner"
 
 export const metadata: Metadata = {
@@ -35,19 +32,9 @@ export default async ({
   params: { locale: string }
 }) => {
   const user = await requireUser()
-  const profileSdk = BBClients.getProfileClient()
-  const profile = await profileSdk.getProfile(user.id)
+  const { profile, consentStatus } = await requireProfile({ userId: user.id })
   const t = await getTranslations("home")
-
-  if (profile.error) {
-    throw new Error("profile error")
-  }
-  if (!profile.data) {
-    throw new Error("profile not found")
-  }
   const config = getCachedConfig()()
-  // TODO: remove this
-  console.dir(profile.data, { depth: null })
 
   const analyticsConfig = {
     baseUrl: config.analytics.client.analyticsUrl,
@@ -69,11 +56,8 @@ export default async ({
             <UserProvider user={user}>
               <ConsentProvider
                 isPublicServant={user.isPublicServant}
-                consentStatus={
-                  profile.data.consentStatuses[CONSENT_SUBJECT] ??
-                  ConsentStatuses.Pending
-                }
-                preferredLanguage={profile.data.preferredLanguage}
+                consentStatus={consentStatus}
+                preferredLanguage={profile.preferredLanguage}
               >
                 <ToastProvider />
                 <PageHeader
@@ -84,7 +68,7 @@ export default async ({
                     dashboardAdminUrl: config.dashboardAdminUrl,
                     messagingUrl: config.baseUrl,
                   }}
-                  publicName={profile.data.publicName || ""}
+                  publicName={profile.publicName || ""}
                 />
                 <MainContainer>
                   <Container>

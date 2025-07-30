@@ -1,13 +1,18 @@
 "use server"
+// biome-ignore assist/source/organizeImports: TODO
 import {
   type AuthSessionOrganizationInfo,
   SelectedOrganizationHandler,
 } from "@ogcio/nextjs-auth"
 import { getServerLogger } from "@ogcio/nextjs-logging-wrapper/server-logger"
 import { notFound, redirect } from "next/navigation"
-import type { AppUser } from "@/types/types"
+import type { AppUser, ProfilePayload } from "@/types/types"
 import { AuthenticationFactory } from "@/utils/authentication-factory"
 import { buildLoginUrlWithPostLoginRedirect } from "@/utils/logto-config"
+import { BBClients } from "@/utils/building-blocks-sdk"
+import { type ConsentStatus, ConsentStatuses } from "@/components/consent/types"
+import { CONSENT_SUBJECT } from "@/components/consent/const"
+import { setConsentToPending } from "./consent/actions"
 
 export const requireUser = async (): Promise<AppUser> => {
   const logger = getServerLogger()
@@ -77,4 +82,27 @@ export const getOrganizations = async (): Promise<{
     organizations: Object.values(userInfo.organizationData ?? {}),
     defaultOrganization: userInfo.organizationData[defaultOrganizationId],
   }
+}
+
+export const requireProfile = async ({
+  userId,
+}: {
+  userId: string
+}): Promise<{ profile: ProfilePayload; consentStatus: ConsentStatus }> => {
+  const profile = await BBClients.getProfileClient().getProfile(userId)
+  if (profile.error) {
+    throw new Error("profile error")
+  }
+  if (!profile.data) {
+    throw new Error("profile not found")
+  }
+  // Consent: if the profile has no consent status or a consent status of undefined
+  // for the messaging service, set the consent status to pending
+  const consentStatus =
+    profile.data.consentStatuses[CONSENT_SUBJECT] ?? ConsentStatuses.Pending
+  if (consentStatus === ConsentStatuses.Undefined) {
+    await setConsentToPending()
+  }
+
+  return { profile: profile.data, consentStatus }
 }

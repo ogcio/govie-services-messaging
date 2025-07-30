@@ -31,3 +31,16 @@ export const handleConsent = async ({
     RedirectType.replace,
   )
 }
+
+export const setConsentToPending = async () => {
+  const profile = await BBClients.getProfileClient().citizen.submitConsent({
+    status: ConsentStatuses.Pending,
+    subject: CONSENT_SUBJECT,
+  })
+
+  if (profile?.error) {
+    return { error: profile.error }
+  }
+
+  return { error: null }
+}
