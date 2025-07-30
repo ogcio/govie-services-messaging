@@ -104,5 +104,5 @@ export const requireProfile = async ({
     await setConsentToPending()
   }
 
-  return { profile: profile.data, consentStatus }
+  return { profile: profile.data, consentStatus: ConsentStatuses.Pending }
 }
