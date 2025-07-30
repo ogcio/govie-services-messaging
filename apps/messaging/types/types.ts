@@ -52,6 +52,12 @@ type TemplateOptionApiPayload = Awaited<
   >
 >["data"][number]
 
+type ProfilePayload = Awaited<
+  ReturnType<
+    Awaited<ReturnType<(typeof BBClients)["getProfileClient"]>["getProfile"]>
+  >
+>["data"]
+
 export type {
   MessageTemplateFormData,
   MessageTemplatePayload,
@@ -60,6 +66,7 @@ export type {
   SendMessagePayloadError,
   EmailProviderApiPayload,
   TemplateOptionApiPayload,
+  ProfilePayload,
 }
 
 export type AppUser = {

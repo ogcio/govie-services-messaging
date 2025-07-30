@@ -1,3 +1,4 @@
+// biome-ignore assist/source/organizeImports: TODO
 import "./styles.css"
 import { Container, Stack, ToastProvider } from "@govie-ds/react"
 import { AnalyticsProvider } from "@ogcio/nextjs-analytics"
@@ -16,6 +17,9 @@ import favicon from "@/public/favicon.ico"
 import { BBClients } from "@/utils/building-blocks-sdk"
 import { getCachedConfig } from "@/utils/env-config"
 import { requireUser } from "./loaders"
+import { ConsentProvider } from "@/components/consent/ConsentProvider"
+import { ConsentStatuses } from "@/components/consent/types"
+import { CONSENT_SUBJECT } from "@/components/consent/const"
 
 export const metadata: Metadata = {
   title: "Messaging",
@@ -57,30 +61,40 @@ export default async ({
         <FaroWrapper config={config.o11y}>
           <AnalyticsProvider config={analyticsConfig}>
             <UserProvider user={user}>
-              <ToastProvider />
-              <PageHeader
-                config={{
-                  profileAdminUrl: config.profileAdminUrl,
-                  profileUrl: config.profileUrl,
-                  dashboardUrl: config.dashboardUrl,
-                  dashboardAdminUrl: config.dashboardAdminUrl,
-                  messagingUrl: config.baseUrl,
-                }}
-                publicName={profile?.data?.publicName || ""}
-              />
-              <MainContainer>
-                <Container>
-                  <Stack
-                    direction='row'
-                    wrap
-                    gap={10}
-                    aria-label={t("arialabel.mainContent")}
-                  >
-                    <FullWidthContainer>{children}</FullWidthContainer>
-                  </Stack>
-                </Container>
-              </MainContainer>
-              <ApplicationFooter profileUrl={config.profileUrl} />
+              <ConsentProvider
+                isPublicServant={user.isPublicServant}
+                consentStatus={
+                  profile.data?.consentStatus?.[CONSENT_SUBJECT] ??
+                  ConsentStatuses.Undefined
+                }
+                profileId={profile.data.id}
+                preferredLanguage={profile.data.preferredLanguage}
+              >
+                <ToastProvider />
+                <PageHeader
+                  config={{
+                    profileAdminUrl: config.profileAdminUrl,
+                    profileUrl: config.profileUrl,
+                    dashboardUrl: config.dashboardUrl,
+                    dashboardAdminUrl: config.dashboardAdminUrl,
+                    messagingUrl: config.baseUrl,
+                  }}
+                  publicName={profile?.data?.publicName || ""}
+                />
+                <MainContainer>
+                  <Container>
+                    <Stack
+                      direction='row'
+                      wrap
+                      gap={10}
+                      aria-label={t("arialabel.mainContent")}
+                    >
+                      <FullWidthContainer>{children}</FullWidthContainer>
+                    </Stack>
+                  </Container>
+                </MainContainer>
+                <ApplicationFooter profileUrl={config.profileUrl} />
+              </ConsentProvider>
             </UserProvider>
           </AnalyticsProvider>
         </FaroWrapper>
