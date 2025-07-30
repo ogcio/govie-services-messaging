@@ -24,14 +24,17 @@ import { handleConsent } from "@/app/[locale]/consent/actions"
 import { CONSENT_ACTIONS, ConsentAnalyticsEvent } from "./analytics"
 import { useAnalytics } from "@ogcio/nextjs-analytics"
 
+// TODO: handle these properly
+const footerLinks = {
+  tc: "https://www.gov.ie/en/privacy-and-data-protection/privacy-notices/privacy-notice-for-messagingie/",
+  privacy:
+    "https://www.gov.ie/en/privacy-and-data-protection/privacy-notices/privacy-notice-for-messagingie/",
+}
+
 export const ConsentModal = () => {
   const t = useTranslations()
-  const {
-    isConsentModalOpen,
-    setIsConsentModalOpen,
-    profileId,
-    preferredLanguage,
-  } = useConsent()
+  const { isConsentModalOpen, setIsConsentModalOpen, preferredLanguage } =
+    useConsent()
   const [isLoading, setIsLoading] = useState({
     accept: false,
     decline: false,
@@ -67,13 +70,6 @@ export const ConsentModal = () => {
     }
   }, [])
 
-  // TODO: handle these properly
-  const footerLinks = {
-    tc: "https://www.gov.ie/en/privacy-and-data-protection/privacy-notices/privacy-notice-for-messagingie/",
-    privacy:
-      "https://www.gov.ie/en/privacy-and-data-protection/privacy-notices/privacy-notice-for-messagingie/",
-  }
-
   const doHandleConsent = async (accept: boolean) => {
     setError(null)
     setIsLoading({
@@ -89,7 +85,6 @@ export const ConsentModal = () => {
     )
     const result = await handleConsent({
       accept,
-      profileId,
       preferredLanguage,
     })
     setIsLoading({

@@ -20,6 +20,7 @@ import { requireUser } from "./loaders"
 import { ConsentProvider } from "@/components/consent/ConsentProvider"
 import { ConsentStatuses } from "@/components/consent/types"
 import { CONSENT_SUBJECT } from "@/components/consent/const"
+import { ConsentBanner } from "@/components/consent/ConsentBanner"
 
 export const metadata: Metadata = {
   title: "Messaging",
@@ -38,10 +39,15 @@ export default async ({
   const profile = await profileSdk.getProfile(user.id)
   const t = await getTranslations("home")
 
-  if (profile.error || !profile.data) {
+  if (profile.error) {
     throw new Error("profile error")
   }
+  if (!profile.data) {
+    throw new Error("profile not found")
+  }
   const config = getCachedConfig()()
+  // TODO: remove this
+  console.dir(profile.data, { depth: null })
 
   const analyticsConfig = {
     baseUrl: config.analytics.client.analyticsUrl,
@@ -64,11 +70,9 @@ export default async ({
               <ConsentProvider
                 isPublicServant={user.isPublicServant}
                 consentStatus={
-                  // @ts-ignore - consentStatus may not be available in profile data yet
-                  profile.data?.consentStatus?.[CONSENT_SUBJECT] ??
-                  ConsentStatuses.Undefined
+                  profile.data.consentStatuses[CONSENT_SUBJECT] ??
+                  ConsentStatuses.Pending
                 }
-                profileId={profile.data.id}
                 preferredLanguage={profile.data.preferredLanguage}
               >
                 <ToastProvider />
@@ -80,7 +84,7 @@ export default async ({
                     dashboardAdminUrl: config.dashboardAdminUrl,
                     messagingUrl: config.baseUrl,
                   }}
-                  publicName={profile?.data?.publicName || ""}
+                  publicName={profile.data.publicName || ""}
                 />
                 <MainContainer>
                   <Container>
@@ -90,7 +94,10 @@ export default async ({
                       gap={10}
                       aria-label={t("arialabel.mainContent")}
                     >
-                      <FullWidthContainer>{children}</FullWidthContainer>
+                      <FullWidthContainer>
+                        <ConsentBanner profileUrl={config.profileUrl} />
+                        {children}
+                      </FullWidthContainer>
                     </Stack>
                   </Container>
                 </MainContainer>

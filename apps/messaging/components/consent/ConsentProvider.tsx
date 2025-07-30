@@ -7,74 +7,63 @@ import {
   type SetStateAction,
   useContext,
   useState,
-  useEffect,
+  Suspense,
 } from "react"
 import { ConsentStatuses, type ConsentStatus } from "./types"
 import { ConsentModal } from "./ConsentModal"
+import { useSearchParams } from "next/navigation"
+import { LANG_EN, type LANG_GA } from "@/types/shared"
 
 const ConsentContext = createContext<{
   isConsentModalOpen: boolean
   setIsConsentModalOpen: Dispatch<SetStateAction<boolean>>
-  profileId: string
-  preferredLanguage: "en" | "ga"
+  preferredLanguage: typeof LANG_EN | typeof LANG_GA
+  isOptedOut: boolean
 }>({
   isConsentModalOpen: false,
   setIsConsentModalOpen: () => {},
-  profileId: "",
-  preferredLanguage: "en",
+  preferredLanguage: LANG_EN,
+  isOptedOut: false,
 })
 
 export const ConsentProvider = ({
   children,
   isPublicServant,
   consentStatus,
-  profileId,
   preferredLanguage,
 }: {
   children: React.ReactNode
   isPublicServant: boolean
   consentStatus: ConsentStatus
-  profileId: string
-  preferredLanguage: "en" | "ga"
+  preferredLanguage: typeof LANG_EN | typeof LANG_GA
 }) => {
+  const hasValidConsent =
+    consentStatus === ConsentStatuses.OptedIn ||
+    consentStatus === ConsentStatuses.PreApproved ||
+    consentStatus === ConsentStatuses.OptedOut
+  const searchParams = useSearchParams()
+  const shouldForceShowModal = searchParams.get("force-consent") === "1"
   const shouldShowModalToCitizen =
-    !isPublicServant &&
-    consentStatus !== ConsentStatuses.OptedIn &&
-    consentStatus !== ConsentStatuses.PreApproved &&
-    consentStatus !== ConsentStatuses.OptedOut
-
-  console.log("ConsentProvider render:", {
-    isPublicServant,
-    consentStatus,
-    shouldShowModalToCitizen,
-    profileId,
-  })
+    !isPublicServant && (!hasValidConsent || shouldForceShowModal)
 
   const [isConsentModalOpen, setIsConsentModalOpen] = useState(
     shouldShowModalToCitizen,
   )
 
-  // Reset modal state when shouldShowModalToCitizen changes (e.g., on navigation)
-  useEffect(() => {
-    console.log("ConsentProvider useEffect:", {
-      shouldShowModalToCitizen,
-      isConsentModalOpen,
-    })
-    setIsConsentModalOpen(shouldShowModalToCitizen)
-  }, [shouldShowModalToCitizen, isConsentModalOpen])
-
   return (
-    <ConsentContext.Provider
-      value={{
-        isConsentModalOpen,
-        setIsConsentModalOpen,
-        profileId,
-        preferredLanguage,
-      }}
-    >
-      <ConsentModal />
-      {children}
-    </ConsentContext.Provider>
+    <Suspense>
+      <ConsentContext.Provider
+        value={{
+          isConsentModalOpen,
+          setIsConsentModalOpen,
+          preferredLanguage,
+          isOptedOut: consentStatus === ConsentStatuses.OptedOut,
+        }}
+      >
+        <ConsentModal />
+        {children}
+      </ConsentContext.Provider>
+    </Suspense>
   )
 }
 

@@ -463,6 +463,9 @@
     }
   },
   "home": {
+    "consent": {
+      "title": "You have opted-out of receiving messages from Public Sector Bodies. You can change your consent preferences at your <link>personal profile page</link>"
+    },
     "heading": {
       "main": "Messaging"
     },
