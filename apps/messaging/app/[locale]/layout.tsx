@@ -64,6 +64,7 @@ export default async ({
               <ConsentProvider
                 isPublicServant={user.isPublicServant}
                 consentStatus={
+                  // @ts-ignore - consentStatus may not be available in profile data yet
                   profile.data?.consentStatus?.[CONSENT_SUBJECT] ??
                   ConsentStatuses.Undefined
                 }

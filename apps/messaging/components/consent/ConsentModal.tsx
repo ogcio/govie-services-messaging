@@ -19,9 +19,8 @@ import {
 } from "@govie-ds/react"
 import { useTranslations } from "next-intl"
 import { useConsent } from "./ConsentProvider"
-import { useState, type ReactElement } from "react"
+import { useState, useRef, useEffect, type ReactElement } from "react"
 import { handleConsent } from "@/app/[locale]/consent/actions"
-import { useRouter } from "next/navigation"
 import { CONSENT_ACTIONS, ConsentAnalyticsEvent } from "./analytics"
 import { useAnalytics } from "@ogcio/nextjs-analytics"
 
@@ -37,9 +36,36 @@ export const ConsentModal = () => {
     accept: false,
     decline: false,
   })
+  const isGlobalLoading = isLoading.accept || isLoading.decline
   const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false)
+  const bottomRef = useRef<HTMLDivElement>(null)
   const analytics = useAnalytics()
+
+  // Set up intersection observer to track when user scrolls to bottom
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries
+        if (entry.isIntersecting) {
+          setHasScrolledToBottom(true)
+        }
+      },
+      {
+        threshold: 0.1, // Trigger when 10% of the element is visible
+      },
+    )
+
+    if (bottomRef.current) {
+      observer.observe(bottomRef.current)
+    }
+
+    return () => {
+      if (bottomRef.current) {
+        observer.unobserve(bottomRef.current)
+      }
+    }
+  }, [])
 
   // TODO: handle these properly
   const footerLinks = {
@@ -49,6 +75,7 @@ export const ConsentModal = () => {
   }
 
   const doHandleConsent = async (accept: boolean) => {
+    setError(null)
     setIsLoading({
       accept,
       decline: !accept,
@@ -69,7 +96,7 @@ export const ConsentModal = () => {
       accept: false,
       decline: false,
     })
-    if (result.error) {
+    if (result?.error) {
       // Note: a toaster won't be visible behind the modal overlay
       setError(result.error)
       analytics.trackEvent(
@@ -87,7 +114,6 @@ export const ConsentModal = () => {
       }),
     )
     setIsConsentModalOpen(false)
-    router.refresh()
     toaster.create({
       position: {
         x: "right",
@@ -135,7 +161,6 @@ export const ConsentModal = () => {
           <Paragraph>
             {t.rich("consent.body.bottom", {
               b: (chunks) => <b>{chunks}</b>,
-              br: () => <br />,
             })}
           </Paragraph>
           <Alert variant='info' title={t("consent.body.small.title")}>
@@ -159,12 +184,14 @@ export const ConsentModal = () => {
               ),
             })}
           </Paragraph>
+          {/* Invisible element to detect scroll to bottom */}
+          <div ref={bottomRef} style={{ height: "1px" }} />
         </Stack>
       </ModalBody>
       <ModalFooter>
         <Button
           variant='secondary'
-          disabled={isLoading.decline || isLoading.accept}
+          disabled={isGlobalLoading || !hasScrolledToBottom}
           onClick={() => doHandleConsent(false)}
         >
           {t("consent.button.decline")}
@@ -172,7 +199,7 @@ export const ConsentModal = () => {
         </Button>
         <Button
           variant='primary'
-          disabled={isLoading.accept || isLoading.decline}
+          disabled={isGlobalLoading || !hasScrolledToBottom}
           onClick={() => doHandleConsent(true)}
         >
           {t("consent.button.accept")}

@@ -7,6 +7,7 @@ import {
   type SetStateAction,
   useContext,
   useState,
+  useEffect,
 } from "react"
 import { ConsentStatuses, type ConsentStatus } from "./types"
 import { ConsentModal } from "./ConsentModal"
@@ -39,10 +40,28 @@ export const ConsentProvider = ({
   const shouldShowModalToCitizen =
     !isPublicServant &&
     consentStatus !== ConsentStatuses.OptedIn &&
-    consentStatus !== ConsentStatuses.PreApproved
+    consentStatus !== ConsentStatuses.PreApproved &&
+    consentStatus !== ConsentStatuses.OptedOut
+
+  console.log("ConsentProvider render:", {
+    isPublicServant,
+    consentStatus,
+    shouldShowModalToCitizen,
+    profileId,
+  })
+
   const [isConsentModalOpen, setIsConsentModalOpen] = useState(
     shouldShowModalToCitizen,
   )
+
+  // Reset modal state when shouldShowModalToCitizen changes (e.g., on navigation)
+  useEffect(() => {
+    console.log("ConsentProvider useEffect:", {
+      shouldShowModalToCitizen,
+      isConsentModalOpen,
+    })
+    setIsConsentModalOpen(shouldShowModalToCitizen)
+  }, [shouldShowModalToCitizen, isConsentModalOpen])
 
   return (
     <ConsentContext.Provider
