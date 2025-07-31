@@ -123,12 +123,20 @@ export const requireProfile = async ({
   const consentStatus =
     profile.data.consentStatuses[CONSENT_SUBJECT] ?? ConsentStatuses.Pending
   if (consentStatus === ConsentStatuses.Undefined) {
-    await setConsentToPending()
+    const { error } = await setConsentToPending()
+
+    return {
+      profile: profile.data,
+      consentStatus: error
+        ? ConsentStatuses.Undefined
+        : ConsentStatuses.Pending,
+      isConsentEnabled: true,
+    }
   }
 
   return {
     profile: profile.data,
-    consentStatus: ConsentStatuses.Pending,
-    isConsentEnabled: true,
+    consentStatus,
+    isConsentEnabled,
   }
 }

@@ -41,7 +41,6 @@ export const ConsentProvider = ({
 }) => {
   const hasValidConsent =
     consentStatus === ConsentStatuses.OptedIn ||
-    consentStatus === ConsentStatuses.PreApproved ||
     consentStatus === ConsentStatuses.OptedOut
   const searchParams = useSearchParams()
   const shouldForceShowModal = searchParams.get("force-consent") === "1"
