@@ -130,7 +130,7 @@ export const requireProfile = async ({
       consentStatus: error
         ? ConsentStatuses.Undefined
         : ConsentStatuses.Pending,
-      isConsentEnabled: true,
+      isConsentEnabled,
     }
   }
 
