@@ -123,7 +123,8 @@ export const requireProfile = async ({
     // Consent: if the profile has no consent status or a consent status of undefined
     // for the messaging service, set the consent status to pending
     const consentStatus =
-      profile.data.consentStatuses?.[CONSENT_SUBJECT] ?? ConsentStatuses.Pending
+      profile.data.consentStatuses?.[CONSENT_SUBJECT] ??
+      ConsentStatuses.Undefined
     if (consentStatus === ConsentStatuses.Undefined) {
       const { error } = await setConsentToPending()
 
