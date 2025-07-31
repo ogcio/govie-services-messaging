@@ -37,7 +37,7 @@ export function MessageTable() {
       id: string
       subject: string
       createdAt: string
-      threadName: string
+      threadName: string | null
       organisationId: string
       recipientUserId: string
       attachmentsCount: number
