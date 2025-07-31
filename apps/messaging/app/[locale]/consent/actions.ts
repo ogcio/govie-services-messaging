@@ -1,12 +1,11 @@
 "use server"
 
-// biome-ignore assist/source/organizeImports: TODO
-import { redirect, RedirectType } from "next/navigation"
+import { RedirectType, redirect } from "next/navigation"
+import { CONSENT_SUBJECT } from "@/components/consent/const"
+import { ConsentStatuses } from "@/components/consent/types"
+import { LANG_EN, type LANG_GA } from "@/types/shared"
 import { BBClients } from "@/utils/building-blocks-sdk"
 import { buildServerUrl } from "@/utils/url-utils.server"
-import { ConsentStatuses } from "@/components/consent/types"
-import { CONSENT_SUBJECT } from "@/components/consent/const"
-import { LANG_EN, type LANG_GA } from "@/types/shared"
 
 export const handleConsent = async ({
   accept,

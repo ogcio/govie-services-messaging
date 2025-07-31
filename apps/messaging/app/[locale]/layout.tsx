@@ -1,4 +1,3 @@
-// biome-ignore assist/source/organizeImports: TODO
 import "./styles.css"
 import { Container, Stack, ToastProvider } from "@govie-ds/react"
 import { AnalyticsProvider } from "@ogcio/nextjs-analytics"
@@ -6,18 +5,19 @@ import { FaroWrapper } from "hooks/use-faro"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { ApplicationFooter } from "@/components/ApplicationFooter"
+import { ConsentBanner } from "@/components/consent/ConsentBanner"
+import { ConsentProvider } from "@/components/consent/ConsentProvider"
 import {
   BodyContainer,
   FullWidthContainer,
   MainContainer,
 } from "@/components/containers"
+import { FeatureFlagsProvider } from "@/components/FeatureFlagsProvider"
 import { PageHeader } from "@/components/navigation/PageHeader"
 import { UserProvider } from "@/components/UserContext"
 import favicon from "@/public/favicon.ico"
 import { getCachedConfig } from "@/utils/env-config"
 import { requireProfile, requireUser } from "./loaders"
-import { ConsentProvider } from "@/components/consent/ConsentProvider"
-import { ConsentBanner } from "@/components/consent/ConsentBanner"
 
 export const metadata: Metadata = {
   title: "Messaging",
@@ -56,43 +56,41 @@ export default async ({
         <FaroWrapper config={config.o11y}>
           <AnalyticsProvider config={analyticsConfig}>
             <UserProvider user={user}>
-              <ConsentProvider
-                isPublicServant={user.isPublicServant}
-                consentStatus={consentStatus}
-                preferredLanguage={profile.preferredLanguage}
-                isConsentEnabled={isConsentEnabled}
-              >
-                <ToastProvider />
-                <PageHeader
-                  config={{
-                    profileAdminUrl: config.profileAdminUrl,
-                    profileUrl: config.profileUrl,
-                    dashboardUrl: config.dashboardUrl,
-                    dashboardAdminUrl: config.dashboardAdminUrl,
-                    messagingUrl: config.baseUrl,
-                  }}
-                  publicName={profile.publicName || ""}
-                />
-                <MainContainer>
-                  <Container>
-                    <Stack
-                      direction='row'
-                      wrap
-                      gap={10}
-                      aria-label={t("arialabel.mainContent")}
-                    >
-                      <FullWidthContainer>
-                        <ConsentBanner
-                          profileUrl={config.profileUrl}
-                          isConsentEnabled={isConsentEnabled}
-                        />
-                        {children}
-                      </FullWidthContainer>
-                    </Stack>
-                  </Container>
-                </MainContainer>
-                <ApplicationFooter profileUrl={config.profileUrl} />
-              </ConsentProvider>
+              <FeatureFlagsProvider isConsentEnabled={isConsentEnabled}>
+                <ConsentProvider
+                  isPublicServant={user.isPublicServant}
+                  consentStatus={consentStatus}
+                  preferredLanguage={profile.preferredLanguage}
+                >
+                  <ToastProvider />
+                  <PageHeader
+                    config={{
+                      profileAdminUrl: config.profileAdminUrl,
+                      profileUrl: config.profileUrl,
+                      dashboardUrl: config.dashboardUrl,
+                      dashboardAdminUrl: config.dashboardAdminUrl,
+                      messagingUrl: config.baseUrl,
+                    }}
+                    publicName={profile.publicName || ""}
+                  />
+                  <MainContainer>
+                    <Container>
+                      <Stack
+                        direction='row'
+                        wrap
+                        gap={10}
+                        aria-label={t("arialabel.mainContent")}
+                      >
+                        <FullWidthContainer>
+                          <ConsentBanner profileUrl={config.profileUrl} />
+                          {children}
+                        </FullWidthContainer>
+                      </Stack>
+                    </Container>
+                  </MainContainer>
+                  <ApplicationFooter profileUrl={config.profileUrl} />
+                </ConsentProvider>
+              </FeatureFlagsProvider>
             </UserProvider>
           </AnalyticsProvider>
         </FaroWrapper>

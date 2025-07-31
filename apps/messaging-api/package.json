@@ -49,7 +49,7 @@
     "@ogcio/o11y-sdk-node": "^0.2.0",
     "@ogcio/shared-errors": "^1.1.0",
     "@logto/node": "2.5.5",
-    "@ogcio/building-blocks-sdk": "^0.2.45",
+    "@ogcio/building-blocks-sdk": "^0.2.48",
     "@sinclair/typebox": "^0.34.38",
     "fastify": "^5.4.0",
     "fastify-plugin": "^5.0.1",

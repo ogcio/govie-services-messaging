@@ -58,8 +58,8 @@ importers:
         specifier: 2.5.5
         version: 2.5.5
       '@ogcio/building-blocks-sdk':
-        specifier: ^0.2.45
-        version: 0.2.45(@logto/node@2.5.5)(typescript@5.8.3)
+        specifier: ^0.2.48
+        version: 0.2.48(@logto/node@2.5.5)(typescript@5.8.3)
       '@ogcio/nextjs-analytics':
         specifier: 1.0.0
         version: 1.0.0
@@ -203,8 +203,8 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1
       '@ogcio/building-blocks-sdk':
-        specifier: ^0.2.45
-        version: 0.2.45(@logto/node@2.5.5)(typescript@5.8.3)
+        specifier: ^0.2.48
+        version: 0.2.48(@logto/node@2.5.5)(typescript@5.8.3)
       '@ogcio/fastify-error-handler':
         specifier: ^5.2.1
         version: 5.2.1
@@ -1405,8 +1405,8 @@ packages:
   '@ogcio/api-auth@5.1.1':
     resolution: {integrity: sha512-rCzI3eFY5bM9Npbh3cfb4rrQ7pKe98P5B+I252NrTrEfz0hT/anOu9e06OfTv21gLoevOCi/fzP119uwi82qdw==}
 
-  '@ogcio/building-blocks-sdk@0.2.45':
-    resolution: {integrity: sha512-wwaeVeo5csbth9makGRM7HnnbBDKzEQ0iIlPN0ldeF2nEqMvsNwCNYneaB9dPwWguJAv26Rg9HpCboi2AZNcPw==}
+  '@ogcio/building-blocks-sdk@0.2.48':
+    resolution: {integrity: sha512-e4k+ujR0hQ5ti9GrH0nee7MlO8sQTtD55Ar4js/F10I/ktlIDtqIUkZniXi81sgcG2unwqS6cP8JvFJl8mVz8Q==}
     peerDependencies:
       '@logto/node': 2.5.5
       unleash-client: ^6.1.1
@@ -7628,7 +7628,7 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@ogcio/building-blocks-sdk@0.2.45(@logto/node@2.5.5)(typescript@5.8.3)':
+  '@ogcio/building-blocks-sdk@0.2.48(@logto/node@2.5.5)(typescript@5.8.3)':
     dependencies:
       '@ogcio/analytics-sdk': 0.2.1
       '@sinclair/typebox': 0.34.38

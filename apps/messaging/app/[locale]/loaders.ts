@@ -1,20 +1,20 @@
 "use server"
-// biome-ignore assist/source/organizeImports: TODO
+
 import {
   type AuthSessionOrganizationInfo,
   SelectedOrganizationHandler,
 } from "@ogcio/nextjs-auth"
 import { getServerLogger } from "@ogcio/nextjs-logging-wrapper/server-logger"
 import { notFound, redirect } from "next/navigation"
-import type { AppUser, ProfilePayload } from "@/types/types"
-import { AuthenticationFactory } from "@/utils/authentication-factory"
-import { buildLoginUrlWithPostLoginRedirect } from "@/utils/logto-config"
-import { BBClients } from "@/utils/building-blocks-sdk"
-import { type ConsentStatus, ConsentStatuses } from "@/components/consent/types"
 import {
   CONSENT_ENABLED_FLAG,
   CONSENT_SUBJECT,
 } from "@/components/consent/const"
+import { type ConsentStatus, ConsentStatuses } from "@/components/consent/types"
+import type { AppUser, ProfilePayload } from "@/types/types"
+import { AuthenticationFactory } from "@/utils/authentication-factory"
+import { BBClients } from "@/utils/building-blocks-sdk"
+import { buildLoginUrlWithPostLoginRedirect } from "@/utils/logto-config"
 import { setConsentToPending } from "./consent/actions"
 
 export const requireUser = async (): Promise<AppUser> => {
@@ -96,47 +96,55 @@ export const requireProfile = async ({
   consentStatus: ConsentStatus
   isConsentEnabled: boolean
 }> => {
-  const profile = await BBClients.getProfileClient().getProfile(userId)
-  if (profile.error) {
-    throw new Error("profile error")
-  }
-  if (!profile.data) {
-    throw new Error("profile not found")
-  }
-  // TODO: remove this once consent is ready to be deployed
-  const isConsentEnabled =
-    await BBClients.getFeatureFlagsClient().isFlagEnabled(
-      CONSENT_ENABLED_FLAG,
-      {
-        userId,
-      },
-    )
-  if (!isConsentEnabled) {
-    return {
-      profile: profile.data,
-      consentStatus: ConsentStatuses.Undefined,
-      isConsentEnabled,
+  const logger = getServerLogger()
+  try {
+    const profile = await BBClients.getProfileClient().getProfile(userId)
+    if (profile.error) {
+      throw new Error("profile error")
     }
-  }
-  // Consent: if the profile has no consent status or a consent status of undefined
-  // for the messaging service, set the consent status to pending
-  const consentStatus =
-    profile.data.consentStatuses[CONSENT_SUBJECT] ?? ConsentStatuses.Pending
-  if (consentStatus === ConsentStatuses.Undefined) {
-    const { error } = await setConsentToPending()
+    if (!profile.data) {
+      throw new Error("profile not found")
+    }
+    // TODO: remove this once consent is ready to be deployed
+    const isConsentEnabled =
+      await BBClients.getFeatureFlagsClient().isFlagEnabled(
+        CONSENT_ENABLED_FLAG,
+        {
+          userId,
+        },
+      )
+    if (!isConsentEnabled) {
+      return {
+        profile: profile.data,
+        consentStatus: ConsentStatuses.Undefined,
+        isConsentEnabled,
+      }
+    }
+    // Consent: if the profile has no consent status or a consent status of undefined
+    // for the messaging service, set the consent status to pending
+    const consentStatus =
+      profile.data.consentStatuses?.[CONSENT_SUBJECT] ?? ConsentStatuses.Pending
+    if (consentStatus === ConsentStatuses.Undefined) {
+      const { error } = await setConsentToPending()
+
+      return {
+        profile: profile.data,
+        consentStatus: error
+          ? ConsentStatuses.Undefined
+          : ConsentStatuses.Pending,
+        isConsentEnabled,
+      }
+    }
 
     return {
       profile: profile.data,
-      consentStatus: error
-        ? ConsentStatuses.Undefined
-        : ConsentStatuses.Pending,
+      consentStatus,
       isConsentEnabled,
     }
-  }
-
-  return {
-    profile: profile.data,
-    consentStatus,
-    isConsentEnabled,
+  } catch (error) {
+    logger.error(`Error fetching profile, redirecting to login: ${error}`, {
+      error,
+    })
+    redirect(buildLoginUrlWithPostLoginRedirect())
   }
 }

@@ -1,18 +1,18 @@
 "use client"
 
-// biome-ignore assist/source/organizeImports: TODO
+import { useSearchParams } from "next/navigation"
 import {
   createContext,
   type Dispatch,
   type SetStateAction,
+  Suspense,
   useContext,
   useState,
-  Suspense,
 } from "react"
-import { ConsentStatuses, type ConsentStatus } from "./types"
-import { ConsentModal } from "./ConsentModal"
-import { useSearchParams } from "next/navigation"
+import { useFeatureFlags } from "@/components/FeatureFlagsProvider"
 import { LANG_EN, type LANG_GA } from "@/types/shared"
+import { ConsentModal } from "./ConsentModal"
+import { type ConsentStatus, ConsentStatuses } from "./types"
 
 const ConsentContext = createContext<{
   isConsentModalOpen: boolean
@@ -31,14 +31,13 @@ export const ConsentProvider = ({
   isPublicServant,
   consentStatus,
   preferredLanguage,
-  isConsentEnabled,
 }: {
   children: React.ReactNode
   isPublicServant: boolean
   consentStatus: ConsentStatus
   preferredLanguage: typeof LANG_EN | typeof LANG_GA
-  isConsentEnabled: boolean
 }) => {
+  const { isConsentEnabled } = useFeatureFlags()
   const hasValidConsent =
     consentStatus === ConsentStatuses.OptedIn ||
     consentStatus === ConsentStatuses.OptedOut

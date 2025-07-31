@@ -1,28 +1,25 @@
 "use client"
 
-// biome-ignore assist/source/organizeImports: TODO
 import {
   Alert,
+  Button,
   Link,
   List,
+  ModalBody,
+  ModalFooter,
+  ModalTitle,
   ModalWrapper,
+  Paragraph,
   Spinner,
   Stack,
   toaster,
 } from "@govie-ds/react"
-import {
-  Button,
-  ModalBody,
-  ModalFooter,
-  ModalTitle,
-  Paragraph,
-} from "@govie-ds/react"
+import { useAnalytics } from "@ogcio/nextjs-analytics"
 import { useTranslations } from "next-intl"
-import { useConsent } from "./ConsentProvider"
-import { useState, useRef, useEffect, type ReactElement } from "react"
+import { type ReactElement, useEffect, useRef, useState } from "react"
 import { handleConsent } from "@/app/[locale]/consent/actions"
 import { CONSENT_ACTIONS, ConsentAnalyticsEvent } from "./analytics"
-import { useAnalytics } from "@ogcio/nextjs-analytics"
+import { useConsent } from "./ConsentProvider"
 
 // TODO: handle these properly
 const footerLinks = {
@@ -93,7 +90,7 @@ export const ConsentModal = () => {
     })
     if (result?.error) {
       // Note: a toaster won't be visible behind the modal overlay
-      setError(result.error)
+      setError(result.error.detail)
       analytics.trackEvent(
         ConsentAnalyticsEvent({
           name: "consent-error",

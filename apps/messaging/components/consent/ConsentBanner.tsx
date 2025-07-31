@@ -2,15 +2,11 @@
 
 import { Alert, Link } from "@govie-ds/react"
 import { useTranslations } from "next-intl"
+import { useFeatureFlags } from "../FeatureFlagsProvider"
 import { useConsent } from "./ConsentProvider"
 
-export const ConsentBanner = ({
-  profileUrl,
-  isConsentEnabled,
-}: {
-  profileUrl: string
-  isConsentEnabled: boolean
-}) => {
+export const ConsentBanner = ({ profileUrl }: { profileUrl: string }) => {
+  const { isConsentEnabled } = useFeatureFlags()
   const t = useTranslations("home")
   const { isOptedOut } = useConsent()
   if (!isOptedOut || !isConsentEnabled) {
