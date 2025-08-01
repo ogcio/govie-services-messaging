@@ -1,5 +1,5 @@
 import { FormField, Select, SelectItem } from "@govie-ds/react"
-import { FullWidthContainer } from "../containers"
+import { FullWidthContainer } from "@/components/containers"
 
 export const OrganizationSelector = ({
   title,

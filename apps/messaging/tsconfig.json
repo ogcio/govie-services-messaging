@@ -24,6 +24,7 @@
     "paths": {
       "@/app/*": ["app/*"],
       "@/components/*": ["components/*"],
+      "@/const/*": ["const/*"],
       "@/types/*": ["types/*"],
       "@/public/*": ["public/*"],
       "@/utils/*": ["utils/*"],

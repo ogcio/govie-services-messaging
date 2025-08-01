@@ -13,10 +13,10 @@ import {
 import { useSearchParams } from "next/navigation"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
+import loader from "@/app/[locale]/home/loader"
 import PaginationWrapper from "@/components/PaginationWrapper"
 import { formatDate } from "@/utils/datetime"
 import { buildClientUrlWithSearchParams } from "@/utils/url-utils.client"
-import loader from "../../app/[locale]/home/loader"
 import { TableDataPlaceholder } from "./TableDataPlaceholder"
 
 export function parseTab(s?: string): "all" | "unread" {
@@ -37,7 +37,7 @@ export function MessageTable() {
       id: string
       subject: string
       createdAt: string
-      threadName: string
+      threadName: string | null
       organisationId: string
       recipientUserId: string
       attachmentsCount: number

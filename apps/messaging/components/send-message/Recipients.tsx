@@ -31,9 +31,9 @@ import { defaultFormGap } from "utils/datetime"
 import { addRecipient } from "@/app/[locale]/admin/send-a-message/addRecipient"
 import { getRecipients } from "@/app/[locale]/admin/send-a-message/getRecipients"
 import { BackButton } from "@/components/BackButton"
+import { FullWidthContainer } from "@/components/containers"
+import { ANALYTICS } from "@/const/analytics"
 import { offsetToPage, pageToOffset } from "@/utils/pagination"
-import { ANALYTICS } from "../../const/analytics"
-import { FullWidthContainer } from "../containers"
 import { SendMessageContext } from "./SendMessageContext"
 
 const pageSize = 5

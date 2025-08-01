@@ -16,7 +16,7 @@ import { useFormState, useFormStatus } from "react-dom"
 import { buildSchedule, defaultFormGap, today } from "utils/datetime"
 import sendMessageAction from "@/app/[locale]/admin/send-a-message/action"
 import { BackButton } from "@/components/BackButton"
-import { ANALYTICS } from "../../const/analytics"
+import { ANALYTICS } from "@/const/analytics"
 import { SendMessageContext } from "./SendMessageContext"
 
 function ButtonWithFormStatus(props: PropsWithChildren) {

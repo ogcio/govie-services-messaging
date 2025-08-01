@@ -5,17 +5,19 @@ import { FaroWrapper } from "hooks/use-faro"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { ApplicationFooter } from "@/components/ApplicationFooter"
+import { ConsentBanner } from "@/components/consent/ConsentBanner"
+import { ConsentProvider } from "@/components/consent/ConsentProvider"
 import {
   BodyContainer,
   FullWidthContainer,
   MainContainer,
 } from "@/components/containers"
+import { FeatureFlagsProvider } from "@/components/FeatureFlagsProvider"
 import { PageHeader } from "@/components/navigation/PageHeader"
 import { UserProvider } from "@/components/UserContext"
 import favicon from "@/public/favicon.ico"
-import { BBClients } from "@/utils/building-blocks-sdk"
 import { getCachedConfig } from "@/utils/env-config"
-import { requireUser } from "./loaders"
+import { requireProfile, requireUser } from "./loaders"
 
 export const metadata: Metadata = {
   title: "Messaging",
@@ -30,13 +32,10 @@ export default async ({
   params: { locale: string }
 }) => {
   const user = await requireUser()
-  const profileSdk = BBClients.getProfileClient()
-  const profile = await profileSdk.getProfile(user.id)
+  const { profile, consentStatus, isConsentEnabled } = await requireProfile({
+    userId: user.id,
+  })
   const t = await getTranslations("home")
-
-  if (profile.error || !profile.data) {
-    throw new Error("profile error")
-  }
   const config = getCachedConfig()()
 
   const analyticsConfig = {
@@ -57,30 +56,41 @@ export default async ({
         <FaroWrapper config={config.o11y}>
           <AnalyticsProvider config={analyticsConfig}>
             <UserProvider user={user}>
-              <ToastProvider />
-              <PageHeader
-                config={{
-                  profileAdminUrl: config.profileAdminUrl,
-                  profileUrl: config.profileUrl,
-                  dashboardUrl: config.dashboardUrl,
-                  dashboardAdminUrl: config.dashboardAdminUrl,
-                  messagingUrl: config.baseUrl,
-                }}
-                publicName={profile?.data?.publicName || ""}
-              />
-              <MainContainer>
-                <Container>
-                  <Stack
-                    direction='row'
-                    wrap
-                    gap={10}
-                    aria-label={t("arialabel.mainContent")}
-                  >
-                    <FullWidthContainer>{children}</FullWidthContainer>
-                  </Stack>
-                </Container>
-              </MainContainer>
-              <ApplicationFooter profileUrl={config.profileUrl} />
+              <FeatureFlagsProvider isConsentEnabled={isConsentEnabled}>
+                <ConsentProvider
+                  isPublicServant={user.isPublicServant}
+                  consentStatus={consentStatus}
+                  preferredLanguage={profile.preferredLanguage}
+                >
+                  <ToastProvider />
+                  <PageHeader
+                    config={{
+                      profileAdminUrl: config.profileAdminUrl,
+                      profileUrl: config.profileUrl,
+                      dashboardUrl: config.dashboardUrl,
+                      dashboardAdminUrl: config.dashboardAdminUrl,
+                      messagingUrl: config.baseUrl,
+                    }}
+                    publicName={profile.publicName || ""}
+                  />
+                  <MainContainer>
+                    <Container>
+                      <Stack
+                        direction='row'
+                        wrap
+                        gap={10}
+                        aria-label={t("arialabel.mainContent")}
+                      >
+                        <FullWidthContainer>
+                          <ConsentBanner profileUrl={config.profileUrl} />
+                          {children}
+                        </FullWidthContainer>
+                      </Stack>
+                    </Container>
+                  </MainContainer>
+                  <ApplicationFooter profileUrl={config.profileUrl} />
+                </ConsentProvider>
+              </FeatureFlagsProvider>
             </UserProvider>
           </AnalyticsProvider>
         </FaroWrapper>

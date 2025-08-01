@@ -596,6 +596,37 @@
       "linking": "Níor cuireadh an teachtaireacht."
     }
   },
+  "consent": {
+    "title": "Táimid ag fáilte duit le MessagingIE",
+    "body": {
+      "top": {
+        "0": "MessagingIE tusa a fháilte le teachtaireachtaí sa bhunachar sonraí (PSBs).",
+        "1": "Nuair a thógann tú teachtaireachtaí le MessagingIE, ní mór duit <b>córas</b> leis an teachtaireachtaí seo."
+      },
+      "list": {
+        "0": "Chun teachtaireacht a sheoladh, ní mór duit teimpléad a chruthú ar dtús nó ceann a roghnú ón roghanna thíos. Mura bhfuil aon teimpléid cruthaithe, téigh chuig an gcuid <href>Teimpléidí Teachtaireachtaí</href> chun tús a chur leis.",
+        "1": "Roghnaigh an cineál teachtaireachta atá uait a sheoladh"
+      },
+      "bottom": "Please note, messages sent to you through MessagingIE may contain personal data. In some cases, special categories of personal data.",
+      "small": {
+        "title": "Important information",
+        "0": "Má tá tú ag córas, beidh teachtaireachtaí a sheoladh le MessagingIE.",
+        "1": "Má tá tú ag córas, ní bheidh teachtaireachtaí a sheoladh le MessagingIE. Ní bheidh teachtaireachtaí a sheoladh le MessagingIE, ach beidh teachtaireachtaí a sheoladh leis an ríomhphost a phostáil ar do phróifíl."
+      },
+      "footer": "Please read our <link1>Terms and Conditions</link1> and <link2>Privacy Notice</link2>."
+    },
+    "button": {
+      "accept": "Córas",
+      "decline": "Ní córas"
+    },
+    "error": {
+      "title": "Tharla earráid agus níor cuireadh an teachtaireachtaí.",
+      "body": "Déan iarracht arís le do thoil."
+    },
+    "success": {
+      "title": "Tá teachtaireachtaí a sheoladh leis go rathúil."
+    }
+  },
   "footer": {
     "link": {
       "privacy": "Príobháideacht",

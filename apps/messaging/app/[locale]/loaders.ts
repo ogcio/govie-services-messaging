@@ -1,13 +1,21 @@
 "use server"
+
 import {
   type AuthSessionOrganizationInfo,
   SelectedOrganizationHandler,
 } from "@ogcio/nextjs-auth"
 import { getServerLogger } from "@ogcio/nextjs-logging-wrapper/server-logger"
 import { notFound, redirect } from "next/navigation"
-import type { AppUser } from "@/types/types"
+import {
+  CONSENT_ENABLED_FLAG,
+  CONSENT_SUBJECT,
+} from "@/components/consent/const"
+import { type ConsentStatus, ConsentStatuses } from "@/components/consent/types"
+import type { AppUser, ProfilePayload } from "@/types/types"
 import { AuthenticationFactory } from "@/utils/authentication-factory"
+import { BBClients } from "@/utils/building-blocks-sdk"
 import { buildLoginUrlWithPostLoginRedirect } from "@/utils/logto-config"
+import { setConsentToPending } from "./consent/actions"
 
 export const requireUser = async (): Promise<AppUser> => {
   const logger = getServerLogger()
@@ -76,5 +84,68 @@ export const getOrganizations = async (): Promise<{
   return {
     organizations: Object.values(userInfo.organizationData ?? {}),
     defaultOrganization: userInfo.organizationData[defaultOrganizationId],
+  }
+}
+
+export const requireProfile = async ({
+  userId,
+}: {
+  userId: string
+}): Promise<{
+  profile: ProfilePayload
+  consentStatus: ConsentStatus
+  isConsentEnabled: boolean
+}> => {
+  const logger = getServerLogger()
+  try {
+    const profile = await BBClients.getProfileClient().getProfile(userId)
+    if (profile.error) {
+      throw new Error("profile error")
+    }
+    if (!profile.data) {
+      throw new Error("profile not found")
+    }
+    // TODO: remove this once consent is ready to be deployed
+    const isConsentEnabled =
+      await BBClients.getFeatureFlagsClient().isFlagEnabled(
+        CONSENT_ENABLED_FLAG,
+        {
+          userId,
+        },
+      )
+    if (!isConsentEnabled) {
+      return {
+        profile: profile.data,
+        consentStatus: ConsentStatuses.Undefined,
+        isConsentEnabled,
+      }
+    }
+    // Consent: if the profile has no consent status or a consent status of undefined
+    // for the messaging service, set the consent status to pending
+    const consentStatus =
+      profile.data.consentStatuses?.[CONSENT_SUBJECT] ??
+      ConsentStatuses.Undefined
+    if (consentStatus === ConsentStatuses.Undefined) {
+      const { error } = await setConsentToPending()
+
+      return {
+        profile: profile.data,
+        consentStatus: error
+          ? ConsentStatuses.Undefined
+          : ConsentStatuses.Pending,
+        isConsentEnabled,
+      }
+    }
+
+    return {
+      profile: profile.data,
+      consentStatus,
+      isConsentEnabled,
+    }
+  } catch (error) {
+    logger.error(`Error fetching profile, redirecting to login: ${error}`, {
+      error,
+    })
+    redirect(buildLoginUrlWithPostLoginRedirect())
   }
 }

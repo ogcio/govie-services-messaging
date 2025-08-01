@@ -463,6 +463,9 @@
     }
   },
   "home": {
+    "consent": {
+      "title": "You have opted-out of receiving messages from Public Sector Bodies. You can change your consent preferences at your <link>personal profile page</link>"
+    },
     "heading": {
       "main": "Messaging"
     },
@@ -594,6 +597,37 @@
     "error": {
       "server": "Failed to load account information. Please <bold>report an issue</bold> if the problem persists.",
       "linking": "Failed to link accounts"
+    }
+  },
+  "consent": {
+    "title": "Welcome to MessagingIE",
+    "body": {
+      "top": {
+        "0": "MessagingIE provides you with a safe and secure access to letters, documents, and messages from Public Sector Bodies (PSBs).",
+        "1": "Before you start using MessagingIE, we need your <b>consent</b> for the following:"
+      },
+      "list": {
+        "0": "To allow Public Sector Bodies to send messages to you where they are required or permitted to give information to you in writing",
+        "1": "To notify you of new messages sent to you through MessagingIE"
+      },
+      "bottom": "Please note, messages sent to you through MessagingIE may contain personal data. In some cases, special categories of personal data.",
+      "small": {
+        "title": "Important information",
+        "0": "If you Accept, you will be receiving secure communications from PSBs via MessagingIE.",
+        "1": "If you Decline, you will not receive any new messages, but you may still <b>view</b> previous messages already delivered. PSBs will no longer communicate with you through MessagingIE, but may contact you through other means."
+      },
+      "footer": "Please read our <link1>Terms and Conditions</link1> and <link2>Privacy Notice</link2>."
+    },
+    "button": {
+      "accept": "Accept",
+      "decline": "Decline"
+    },
+    "error": {
+      "title": "An error occurred while updating your consent",
+      "body": "Please try again later"
+    },
+    "success": {
+      "title": "Your consent preferences have been updated"
     }
   },
   "footer": {

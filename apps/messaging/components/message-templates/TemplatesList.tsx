@@ -41,7 +41,7 @@ import {
 } from "utils/url-utils.client"
 import { handleDeleteAction } from "@/app/[locale]/admin/message-templates/deleteAction"
 import { getTemplates } from "@/app/[locale]/admin/message-templates/getTemplates"
-import { FullWidthContainer, TwoColumnLayout } from "../containers"
+import { FullWidthContainer, TwoColumnLayout } from "@/components/containers"
 
 const deleteToDefault = Object.freeze({
   id: "",

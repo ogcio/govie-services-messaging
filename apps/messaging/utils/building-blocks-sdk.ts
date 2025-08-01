@@ -2,6 +2,7 @@ import { getBuildingBlockSDK, getM2MTokenFn } from "@ogcio/building-blocks-sdk"
 import {
   AccessTokenError,
   type Analytics,
+  type FeatureFlags,
   type GetAccessTokenParams,
   type GetOrganizationTokenParams,
   type Messaging,
@@ -56,9 +57,16 @@ export const getAnalyticsM2MConfig = (): GetOrganizationTokenParams => {
 const invokeTokenApi = async (serviceName: string): Promise<string> => {
   let token = ""
 
-  const { messagingApiResource, profileApiResource } = getCachedConfig()()
+  const {
+    messagingApiResource,
+    profileApiResource,
+    featureFlags: { token: featureFlagsToken },
+  } = getCachedConfig()()
 
   switch (serviceName) {
+    case "featureFlags":
+      token = featureFlagsToken
+      break
     case "upload":
       token = await getAccessToken("/api/upload-token")
       break
@@ -136,6 +144,7 @@ const getSDKs = () => {
       messaging: { baseUrl: config.messagingApiResource },
       profile: { baseUrl: config.profileApiResource },
       upload: { baseUrl: config.uploadApiResource },
+      featureFlags: { baseUrl: config.featureFlags.baseUrl },
       analytics: {
         baseUrl: config.analytics.server.analyticsUrl,
         dryRun: config.analytics.server.analyticsDryRun,
@@ -190,6 +199,11 @@ export class BBClients {
   }
   static getAnalyticsClient() {
     return new Proxy<Analytics>(getSDKs().analytics, {
+      get: BBClients.errorHandler,
+    })
+  }
+  static getFeatureFlagsClient() {
+    return new Proxy<FeatureFlags>(getSDKs().featureFlags, {
       get: BBClients.errorHandler,
     })
   }

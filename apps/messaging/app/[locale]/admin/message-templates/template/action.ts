@@ -1,12 +1,12 @@
 "use server"
+import {
+  getMessageTemplateContentSchema,
+  getMessageTemplateSchema,
+} from "@/types/schemas-server"
 import type {
   MessageTemplatePayload,
   MessageTemplatePayloadError,
 } from "@/types/types"
-import {
-  getMessageTemplateContentSchema,
-  getMessageTemplateSchema,
-} from "../../../../../types/schemas-server"
 import { createOrUpdateTemplate } from "./createOrUpdateTemplate"
 
 export async function createOrUpdateTemplateAction(

@@ -17,7 +17,7 @@ import { LANG_EN, LANG_GA } from "@/types/shared"
 import type {
   MessageTemplateFormData,
   MessageTemplatePayloadError,
-} from "../../types/types"
+} from "@/types/types"
 
 export const VALID_TEMPLATE_VARIABLES = ["publicName", "ppsn", "email"]
 

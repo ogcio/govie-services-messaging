@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { createContext, useContext, useEffect } from "react"
 import { setOrganization } from "@/app/[locale]/actions"
 import type { AppUser } from "@/types/types"
-import { routes } from "../utils"
+import { routes } from "@/utils/index"
 
 type UserContextType = {
   user: AppUser | undefined

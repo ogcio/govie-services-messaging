@@ -1,9 +1,9 @@
 "use server"
 import { RedirectType, redirect } from "next/navigation"
+import { requireUser } from "@/app/[locale]/loaders"
 import { BBClients } from "@/utils/building-blocks-sdk"
 import { getCachedConfig } from "@/utils/env-config"
 import { buildServerUrl } from "@/utils/url-utils.server"
-import { requireUser } from "../../loaders"
 
 export const confirmAccountLinking = async ({
   currentUserId,

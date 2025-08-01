@@ -89,6 +89,10 @@ const getConfig = () => {
           analyticsM2MScopes: "dummy",
         },
       },
+      featureFlags: {
+        baseUrl: "dummy",
+        token: "dummy",
+      },
       onboardingM2MAppId: "dummy",
       onboardingM2MAppSecret: "dummy",
       citizenScopes: ["dummy"],
@@ -161,6 +165,9 @@ const getConfig = () => {
       OTEL_FARO_CORS_ALLOWED_URLS: z.string().optional(),
       OTEL_LOG_LEVEL: z.string().optional(),
       MYGOVID_END_SESSION_URL: z.string(),
+      // Feature Flags
+      FEATURE_FLAGS_URL: z.string(),
+      FEATURE_FLAGS_TOKEN: z.string(),
     }),
   )
 
@@ -210,6 +217,10 @@ const getConfig = () => {
         analyticsM2MOrganizationId: env.LOGTO_M2M_ANALYTICS_ORGANIZATION_ID,
         analyticsM2MScopes: env.LOGTO_M2M_ANALYTICS_SCOPES,
       },
+    },
+    featureFlags: {
+      baseUrl: trimSlash(env.FEATURE_FLAGS_URL),
+      token: env.FEATURE_FLAGS_TOKEN,
     },
     onboardingM2MAppId: env.LOGTO_M2M_ONBOARDING_APP_ID,
     onboardingM2MAppSecret: env.LOGTO_M2M_ONBOARDING_APP_SECRET,

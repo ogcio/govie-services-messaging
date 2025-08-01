@@ -5,6 +5,8 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 import { defaultFormGap } from "utils/datetime"
+import { MessageTable } from "@/components/home/MessageTable"
+import { MessageTabs } from "@/components/home/MessageTabs"
 import SearchBar from "@/components/home/SearchBar"
 import { AuthenticationFactory } from "@/utils/authentication-factory"
 import { BBClients } from "@/utils/building-blocks-sdk"
@@ -13,8 +15,6 @@ import {
   CustomHeaders,
   getLoginUrlWithCustomPostLoginRedirect,
 } from "@/utils/logto-config"
-import { MessageTable } from "../../../components/home/MessageTable"
-import { MessageTabs } from "../../../components/home/MessageTabs"
 import loader from "./loader"
 import { redirectIfPublicServant } from "./redirectPublicServant"
 

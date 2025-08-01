@@ -15,11 +15,11 @@ import { usePathname, useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import loader from "@/app/[locale]/admin/message-events/loader"
+import PaginationWrapper from "@/components/PaginationWrapper"
 import { formatDate } from "@/utils/datetime"
 import { isStatus } from "@/utils/messaging"
 import { PAGINATION_LIMIT_DEFAULT } from "@/utils/pagination"
 import { buildClientUrl } from "@/utils/url-utils.client"
-import PaginationWrapper from "../PaginationWrapper"
 import { MessageStatus } from "./MessageStatus"
 
 export default function EventTable() {
