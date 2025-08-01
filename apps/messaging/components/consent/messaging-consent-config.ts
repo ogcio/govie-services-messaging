@@ -1,7 +1,7 @@
 import { useAnalytics } from "@ogcio/nextjs-analytics"
 import { ConsentAnalyticsEvent } from "./analytics"
 import { CONSENT_SUBJECT } from "./const"
-import { createMessagingConsentAPI } from "./messaging-consent-api"
+import { createMessagingConsentAPI } from "./messaging-consent-api-impl"
 import type {
   ConsentAction,
   ConsentAnalyticsTracker,
