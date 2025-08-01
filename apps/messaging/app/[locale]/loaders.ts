@@ -97,55 +97,56 @@ export const requireProfile = async ({
   isConsentEnabled: boolean
 }> => {
   const logger = getServerLogger()
+  const profile = await BBClients.getProfileClient().getProfile(userId)
+  if (profile.error) {
+    throw new Error("profile error")
+  }
+  if (!profile.data) {
+    throw new Error("profile not found")
+  }
+  let isConsentEnabled = false
   try {
-    const profile = await BBClients.getProfileClient().getProfile(userId)
-    if (profile.error) {
-      throw new Error("profile error")
-    }
-    if (!profile.data) {
-      throw new Error("profile not found")
-    }
     // TODO: remove this once consent is ready to be deployed
-    const isConsentEnabled =
-      await BBClients.getFeatureFlagsClient().isFlagEnabled(
-        CONSENT_ENABLED_FLAG,
-        {
-          userId,
-        },
-      )
-    if (!isConsentEnabled) {
-      return {
-        profile: profile.data,
-        consentStatus: ConsentStatuses.Undefined,
-        isConsentEnabled,
-      }
+    isConsentEnabled = await BBClients.getFeatureFlagsClient().isFlagEnabled(
+      CONSENT_ENABLED_FLAG,
+      {
+        userId,
+      },
+    )
+  } catch (error) {
+    logger.error(
+      `Error fetching feature flag, redirecting to login: ${error}`,
+      {
+        error,
+      },
+    )
+  }
+  if (!isConsentEnabled) {
+    return {
+      profile: profile.data,
+      consentStatus: ConsentStatuses.Undefined,
+      isConsentEnabled,
     }
-    // Consent: if the profile has no consent status or a consent status of undefined
-    // for the messaging service, set the consent status to pending
-    const consentStatus =
-      profile.data.consentStatuses?.[CONSENT_SUBJECT] ??
-      ConsentStatuses.Undefined
-    if (consentStatus === ConsentStatuses.Undefined) {
-      const { error } = await setConsentToPending()
-
-      return {
-        profile: profile.data,
-        consentStatus: error
-          ? ConsentStatuses.Undefined
-          : ConsentStatuses.Pending,
-        isConsentEnabled,
-      }
-    }
+  }
+  // Consent: if the profile has no consent status or a consent status of undefined
+  // for the messaging service, set the consent status to pending
+  const consentStatus =
+    profile.data.consentStatuses?.[CONSENT_SUBJECT] ?? ConsentStatuses.Undefined
+  if (consentStatus === ConsentStatuses.Undefined) {
+    const { error } = await setConsentToPending()
 
     return {
       profile: profile.data,
-      consentStatus,
+      consentStatus: error
+        ? ConsentStatuses.Undefined
+        : ConsentStatuses.Pending,
       isConsentEnabled,
     }
-  } catch (error) {
-    logger.error(`Error fetching profile, redirecting to login: ${error}`, {
-      error,
-    })
-    redirect(buildLoginUrlWithPostLoginRedirect())
+  }
+
+  return {
+    profile: profile.data,
+    consentStatus,
+    isConsentEnabled,
   }
 }
