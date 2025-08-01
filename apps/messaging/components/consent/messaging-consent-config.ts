@@ -60,7 +60,11 @@ export const createMessagingConsentConfig = ({
         consentStatus === ConsentStatuses.OptedOut
 
       // 4. Version check - show if user consented to older version
-      const hasValidVersion = userConsentVersion === latestConsentVersion
+      // If userConsentVersion is undefined, treat as valid for backward compatibility
+      // (only enforce version check when version tracking is implemented)
+      const hasValidVersion =
+        userConsentVersion === undefined ||
+        userConsentVersion === latestConsentVersion
 
       // 5. Force show parameter check
       const shouldForceShowModal = searchParams.get("force-consent") === "1"
