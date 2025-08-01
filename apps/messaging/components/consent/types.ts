@@ -10,6 +10,35 @@ export type ConsentStatus =
 
 // Configuration interfaces for reusable consent system
 
+// Backend API response structure
+// TODO: type this with awaited response from BB SDK
+export interface ConsentStatementTranslation {
+  id: string
+  consentStatementId: string
+  language: string
+  title?: string
+  bodyTop: string[]
+  bodyList: string[]
+  bodyBottom: string[]
+  bodySmall: string[]
+  bodyFooter?: string
+  bodyLinks: Record<string, string> // Dynamic links from backend (tc, pp, etc.)
+  createdAt: string
+}
+
+export interface ConsentStatementData {
+  id: string
+  subject: string
+  version: number
+  createdAt: string
+  translations: Record<string, ConsentStatementTranslation> // "en", "ga", etc.
+}
+
+export interface ConsentStatementResponse {
+  data: ConsentStatementData
+}
+
+// Frontend content structure (transformed from backend)
 export interface ConsentContent {
   // Version tracking for consent updates
   version: {
@@ -21,6 +50,7 @@ export interface ConsentContent {
   title: string
   bodyParagraphs: string[]
   listItems: string[]
+  bodyBottom?: string[]
   infoAlert?: {
     title: string
     items: string[]
@@ -38,6 +68,8 @@ export interface ConsentContent {
     title: string
     message: string
   }
+  // Dynamic links from backend
+  links: Record<string, string>
 }
 
 export interface ConsentLinks {
@@ -101,11 +133,8 @@ export interface ConsentModalVisibilityParams {
 export interface ConsentConfig {
   subject: string
 
-  // Content (from backend)
+  // Content (from backend) - now includes links
   content: ConsentContent
-
-  // External links
-  links: ConsentLinks
 
   // User context configuration
   userContext: {

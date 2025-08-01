@@ -137,28 +137,39 @@ export const ConsentModal = () => {
   }
 
   const renderTextWithLinks = (text: string) => {
-    const parts = text.split(/(\[link[12]\]\([^)]*\))/g)
-    return parts.map((part, partIndex) => {
-      const link1Match = part.match(/\[link1\]\(([^)]*)\)/)
-      const link2Match = part.match(/\[link2\]\(([^)]*)\)/)
+    // Replace <tc>Terms and Conditions</tc> and <pp>Privacy Notice</pp> with actual links
+    let processedText = text
 
-      if (link1Match) {
+    // Replace link placeholders with actual links
+    Object.entries(content.links).forEach(([key, url]) => {
+      const linkText =
+        key === "tc"
+          ? "Terms and Conditions"
+          : key === "pp"
+            ? "Privacy Notice"
+            : key
+
+      // Replace the entire tag including content: <tc>Terms and Conditions</tc>
+      const fullTag = `<${key}>${linkText}</${key}>`
+      const linkTag = `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`
+
+      processedText = processedText.replace(fullTag, linkTag)
+    })
+
+    // Split by HTML tags and render
+    const parts = processedText.split(/(<a[^>]*>.*?<\/a>)/g)
+    return parts.map((part, partIndex) => {
+      const linkMatch = part.match(/<a href="([^"]*)"[^>]*>(.*?)<\/a>/)
+
+      if (linkMatch) {
         return (
           <Link
-            key={`link1-${partIndex}-${link1Match[1]}`}
-            href={link1Match[1]}
+            key={`link-${partIndex}-${linkMatch[1]}`}
+            href={linkMatch[1]}
+            target='_blank'
+            rel='noopener noreferrer'
           >
-            Terms & Conditions
-          </Link>
-        )
-      }
-      if (link2Match) {
-        return (
-          <Link
-            key={`link2-${partIndex}-${link2Match[1]}`}
-            href={link2Match[1]}
-          >
-            Privacy Policy
+            {linkMatch[2]}
           </Link>
         )
       }
@@ -195,9 +206,12 @@ export const ConsentModal = () => {
               {paragraph}
             </Paragraph>
           ))}
-
           {content.listItems.length > 0 && (
             <List type='bullet' items={content.listItems} />
+          )}
+
+          {content.bodyBottom && content.bodyBottom.length > 0 && (
+            <Paragraph>{content.bodyBottom.join(" ")}</Paragraph>
           )}
 
           {content.infoAlert && (
@@ -205,11 +219,9 @@ export const ConsentModal = () => {
               <List className='gi-text-sm' items={content.infoAlert.items} />
             </Alert>
           )}
-
           <Paragraph style={{ maxWidth: "unset" }} size='sm'>
             {renderTextWithLinks(content.footerText)}
           </Paragraph>
-
           {/* Invisible element to detect scroll to bottom */}
           <div ref={bottomRef} style={{ height: "1px" }} />
         </Stack>

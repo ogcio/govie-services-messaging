@@ -26,14 +26,6 @@ export const createMessagingConsentConfig = ({
     subject: CONSENT_SUBJECT,
     content,
 
-    links: {
-      // TODO: Make these configurable from env/config
-      privacyPolicy:
-        "https://www.gov.ie/en/privacy-and-data-protection/privacy-notices/privacy-notice-for-messagingie/",
-      termsAndConditions:
-        "https://www.gov.ie/en/privacy-and-data-protection/privacy-notices/privacy-notice-for-messagingie/",
-    },
-
     userContext: {
       getPreferredLanguage: (user: ConsentUserContext) => {
         return user.preferredLanguage
@@ -193,5 +185,10 @@ export const createSampleConsentContent = (): ConsentContent => ({
     title: "Error updating consent",
     message:
       "There was an error updating your consent preferences. Please try again.",
+  },
+  // Sample links for development
+  links: {
+    link1: "https://www.gov.ie/privacy",
+    link2: "https://www.gov.ie/terms",
   },
 })
