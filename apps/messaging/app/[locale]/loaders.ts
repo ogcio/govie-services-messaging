@@ -114,12 +114,9 @@ export const requireProfile = async ({
       },
     )
   } catch (error) {
-    logger.error(
-      `Error fetching feature flag, redirecting to login: ${error}`,
-      {
-        error,
-      },
-    )
+    logger.error(`Error fetching feature flag: ${error}`, {
+      error,
+    })
   }
   if (!isConsentEnabled) {
     return {
