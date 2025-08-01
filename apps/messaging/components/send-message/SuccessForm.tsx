@@ -15,7 +15,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { useContext, useEffect, useRef } from "react"
 import { defaultFormGap, today, toIrishTime } from "utils/datetime"
 import { SuccessBannerContainer } from "@/components/containers"
-import { ANALYTICS } from "../../const/analytics"
+import { ANALYTICS } from "@/const/analytics"
 import { SendMessageContext, SendMessageSteps } from "./SendMessageContext"
 
 export default () => {

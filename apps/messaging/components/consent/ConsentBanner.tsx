@@ -2,7 +2,7 @@
 
 import { Alert, Link } from "@govie-ds/react"
 import { useTranslations } from "next-intl"
-import { useFeatureFlags } from "../FeatureFlagsProvider"
+import { useFeatureFlags } from "@/components/FeatureFlagsProvider"
 import { useConsent } from "./ConsentProvider"
 
 export const ConsentBanner = ({ profileUrl }: { profileUrl: string }) => {

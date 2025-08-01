@@ -20,9 +20,9 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { defaultFormGap } from "utils/datetime"
 import { getTemplate } from "@/app/[locale]/admin/send-a-message/getTemplate"
 import { getTemplatesAndLanguage } from "@/app/[locale]/admin/send-a-message/getTemplatesAndLanguage"
+import { SubmitButton } from "@/components/SubmitButton"
+import { ANALYTICS } from "@/const/analytics"
 import type { TemplateOptionApiPayload } from "@/types/types"
-import { ANALYTICS } from "../../const/analytics"
-import { SubmitButton } from "../SubmitButton"
 import { SendMessageContext } from "./SendMessageContext"
 
 export default function ComposeMessageMeta() {
