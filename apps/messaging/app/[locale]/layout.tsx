@@ -6,7 +6,7 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { ApplicationFooter } from "@/components/ApplicationFooter"
 import { ConsentBanner } from "@/components/consent/ConsentBanner"
-import { ConsentProvider } from "@/components/consent/ConsentProvider"
+import { MessagingConsentWrapper } from "@/components/consent/MessagingConsentWrapper"
 import {
   BodyContainer,
   FullWidthContainer,
@@ -57,10 +57,13 @@ export default async ({
           <AnalyticsProvider config={analyticsConfig}>
             <UserProvider user={user}>
               <FeatureFlagsProvider isConsentEnabled={isConsentEnabled}>
-                <ConsentProvider
-                  isPublicServant={user.isPublicServant}
+                <MessagingConsentWrapper
+                  userContext={{
+                    isPublicServant: user.isPublicServant,
+                    preferredLanguage: profile.preferredLanguage,
+                  }}
                   consentStatus={consentStatus}
-                  preferredLanguage={profile.preferredLanguage}
+                  isConsentEnabled={isConsentEnabled}
                 >
                   <ToastProvider />
                   <PageHeader
@@ -89,7 +92,7 @@ export default async ({
                     </Container>
                   </MainContainer>
                   <ApplicationFooter profileUrl={config.profileUrl} />
-                </ConsentProvider>
+                </MessagingConsentWrapper>
               </FeatureFlagsProvider>
             </UserProvider>
           </AnalyticsProvider>

@@ -10,12 +10,12 @@ import {
   CONSENT_ENABLED_FLAG,
   CONSENT_SUBJECT,
 } from "@/components/consent/const"
+import { setConsentToPending } from "@/components/consent/messaging-consent-api"
 import { type ConsentStatus, ConsentStatuses } from "@/components/consent/types"
 import type { AppUser, ProfilePayload } from "@/types/types"
 import { AuthenticationFactory } from "@/utils/authentication-factory"
 import { BBClients } from "@/utils/building-blocks-sdk"
 import { buildLoginUrlWithPostLoginRedirect } from "@/utils/logto-config"
-import { setConsentToPending } from "./consent/actions"
 
 export const requireUser = async (): Promise<AppUser> => {
   const logger = getServerLogger()
