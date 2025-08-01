@@ -11,6 +11,13 @@ export type ConsentStatus =
 // Configuration interfaces for reusable consent system
 
 export interface ConsentContent {
+  // Version tracking for consent updates
+  version: {
+    id: string
+    createdAt: string // ISO date string
+    description?: string // Optional description of what changed
+  }
+
   title: string
   bodyParagraphs: string[]
   listItems: string[]
@@ -49,6 +56,7 @@ export interface ConsentAPI {
     accept: boolean
     subject: string
     preferredLanguage?: string
+    versionId?: string // Version ID of the consent being accepted/declined
   }): Promise<ConsentResult>
   setConsentToPending(subject: string): Promise<ConsentResult>
 }
@@ -81,6 +89,15 @@ export interface ConsentUserContext {
   [key: string]: unknown
 }
 
+export interface ConsentModalVisibilityParams {
+  userContext: ConsentUserContext
+  consentStatus: ConsentStatus
+  searchParams: URLSearchParams
+  // Version tracking for checking if user needs to re-consent
+  userConsentVersion?: string // Version ID the user previously consented to
+  latestConsentVersion: string // Latest version ID from API
+}
+
 export interface ConsentConfig {
   subject: string
 
@@ -92,13 +109,11 @@ export interface ConsentConfig {
 
   // User context configuration
   userContext: {
-    shouldShowModal: (
-      user: ConsentUserContext,
-      consentStatus: ConsentStatus,
-      isEnabled: boolean,
-    ) => boolean
     getPreferredLanguage: (user: ConsentUserContext) => string
   }
+
+  // Composable modal visibility logic
+  shouldShowModal: (params: ConsentModalVisibilityParams) => boolean
 
   // API integration
   api: ConsentAPI

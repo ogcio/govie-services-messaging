@@ -40,31 +40,25 @@ export const ConsentProvider = ({
   config,
   userContext,
   consentStatus,
+  userConsentVersion,
   events,
 }: {
   children: React.ReactNode
   config: ConsentConfig
   userContext: ConsentUserContext
   consentStatus: ConsentStatus
+  userConsentVersion?: string // Version ID the user consented to
   events?: ConsentEvents
 }) => {
-  const hasValidConsent =
-    consentStatus === ConsentStatuses.OptedIn ||
-    consentStatus === ConsentStatuses.OptedOut
-
   const searchParams = useSearchParams()
-  const forceModalParam = config.forceModalParam || "force-consent"
-  const shouldForceShowModal = searchParams.get(forceModalParam) === "1"
 
-  const isFeatureEnabled = config.featureFlags?.isEnabled() ?? true
-
-  const shouldShowModal =
-    config.userContext.shouldShowModal(
-      userContext,
-      consentStatus,
-      isFeatureEnabled,
-    ) &&
-    (!hasValidConsent || shouldForceShowModal)
+  const shouldShowModal = config.shouldShowModal({
+    userContext,
+    consentStatus,
+    searchParams,
+    userConsentVersion,
+    latestConsentVersion: config.content.version.id,
+  })
 
   const [isConsentModalOpen, setIsConsentModalOpen] = useState(shouldShowModal)
 

@@ -6,12 +6,6 @@ import {
 } from "@ogcio/nextjs-auth"
 import { getServerLogger } from "@ogcio/nextjs-logging-wrapper/server-logger"
 import { notFound, redirect } from "next/navigation"
-import {
-  CONSENT_ENABLED_FLAG,
-  CONSENT_SUBJECT,
-} from "@/components/consent/const"
-import { setConsentToPending } from "@/components/consent/messaging-consent-api"
-import { type ConsentStatus, ConsentStatuses } from "@/components/consent/types"
 import type { AppUser, ProfilePayload } from "@/types/types"
 import { AuthenticationFactory } from "@/utils/authentication-factory"
 import { BBClients } from "@/utils/building-blocks-sdk"
@@ -93,10 +87,7 @@ export const requireProfile = async ({
   userId: string
 }): Promise<{
   profile: ProfilePayload
-  consentStatus: ConsentStatus
-  isConsentEnabled: boolean
 }> => {
-  const logger = getServerLogger()
   const profile = await BBClients.getProfileClient().getProfile(userId)
   if (profile.error) {
     throw new Error("profile error")
@@ -104,46 +95,5 @@ export const requireProfile = async ({
   if (!profile.data) {
     throw new Error("profile not found")
   }
-  let isConsentEnabled = false
-  try {
-    // TODO: remove this once consent is ready to be deployed
-    isConsentEnabled = await BBClients.getFeatureFlagsClient().isFlagEnabled(
-      CONSENT_ENABLED_FLAG,
-      {
-        userId,
-      },
-    )
-  } catch (error) {
-    logger.error(`Error fetching feature flag: ${error}`, {
-      error,
-    })
-  }
-  if (!isConsentEnabled) {
-    return {
-      profile: profile.data,
-      consentStatus: ConsentStatuses.Undefined,
-      isConsentEnabled,
-    }
-  }
-  // Consent: if the profile has no consent status or a consent status of undefined
-  // for the messaging service, set the consent status to pending
-  const consentStatus =
-    profile.data.consentStatuses?.[CONSENT_SUBJECT] ?? ConsentStatuses.Undefined
-  if (consentStatus === ConsentStatuses.Undefined) {
-    const { error } = await setConsentToPending()
-
-    return {
-      profile: profile.data,
-      consentStatus: error
-        ? ConsentStatuses.Undefined
-        : ConsentStatuses.Pending,
-      isConsentEnabled,
-    }
-  }
-
-  return {
-    profile: profile.data,
-    consentStatus,
-    isConsentEnabled,
-  }
+  return { profile: profile.data }
 }

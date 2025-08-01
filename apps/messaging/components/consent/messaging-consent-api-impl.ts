@@ -11,11 +11,13 @@ class MessagingConsentAPIImpl implements ConsentAPI {
     accept: boolean
     subject: string
     preferredLanguage?: string
+    versionId?: string
   }): Promise<ConsentResult> {
     return submitConsent({
       accept: params.accept,
       subject: params.subject as typeof CONSENT_SUBJECT,
       preferredLanguage: params.preferredLanguage,
+      versionId: params.versionId,
     })
   }
 

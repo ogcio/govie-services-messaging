@@ -9,6 +9,7 @@ import type {
   ConsentContent,
   ConsentUserContext,
 } from "./types"
+import { ConsentStatuses } from "./types"
 
 /**
  * Creates the consent configuration for the messaging application
@@ -34,17 +35,38 @@ export const createMessagingConsentConfig = ({
     },
 
     userContext: {
-      shouldShowModal: (
-        user: ConsentUserContext,
-        _consentStatus,
-        isEnabled,
-      ) => {
-        // Messaging-specific logic: don't show to public servants
-        return !user.isPublicServant && isEnabled
-      },
       getPreferredLanguage: (user: ConsentUserContext) => {
         return user.preferredLanguage
       },
+    },
+
+    // Composable modal visibility logic - all concerns in one place
+    shouldShowModal: ({
+      userContext,
+      consentStatus,
+      searchParams,
+      userConsentVersion,
+      latestConsentVersion,
+    }) => {
+      // 1. Feature flag check first
+      if (!isConsentEnabled) return false
+
+      // 2. User type check - don't show to public servants
+      if (userContext.isPublicServant) return false
+
+      // 3. Consent status check
+      const hasValidConsent =
+        consentStatus === ConsentStatuses.OptedIn ||
+        consentStatus === ConsentStatuses.OptedOut
+
+      // 4. Version check - show if user consented to older version
+      const hasValidVersion = userConsentVersion === latestConsentVersion
+
+      // 5. Force show parameter check
+      const shouldForceShowModal = searchParams.get("force-consent") === "1"
+
+      // 6. Final decision: show if no valid consent OR outdated version OR forced
+      return !hasValidConsent || !hasValidVersion || shouldForceShowModal
     },
 
     api: createMessagingConsentAPI(),
@@ -131,6 +153,13 @@ export const useMessagingConsentConfig = ({
  * In production, this would come from the backend
  */
 export const createSampleConsentContent = (): ConsentContent => ({
+  // Sample version data for development
+  version: {
+    id: "messaging-consent-v1.0.0",
+    createdAt: new Date().toISOString(),
+    description: "Initial messaging consent terms",
+  },
+
   title: "Your consent for messaging",
   bodyParagraphs: [
     "We would like your consent to send you messages about government services.",

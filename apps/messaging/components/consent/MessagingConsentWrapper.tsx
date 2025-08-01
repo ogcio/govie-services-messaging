@@ -1,10 +1,7 @@
 "use client"
 
 import { ConsentProvider } from "./ConsentProvider"
-import {
-  createSampleConsentContent,
-  useMessagingConsentConfig,
-} from "./messaging-consent-config"
+import { useMessagingConsentConfig } from "./messaging-consent-config"
 import type { ConsentContent, ConsentStatus, ConsentUserContext } from "./types"
 
 /**
@@ -16,14 +13,15 @@ export const MessagingConsentWrapper = ({
   userContext,
   consentStatus,
   isConsentEnabled,
-  // TODO: This should come from backend/API call
-  consentContent = createSampleConsentContent(),
+  consentContent,
+  userConsentVersion,
 }: {
   children: React.ReactNode
   userContext: ConsentUserContext
   consentStatus: ConsentStatus
   isConsentEnabled: boolean
-  consentContent?: ConsentContent // Content from backend
+  consentContent: ConsentContent
+  userConsentVersion?: string // Version ID the user consented to
 }) => {
   const config = useMessagingConsentConfig({
     content: consentContent,
@@ -35,6 +33,7 @@ export const MessagingConsentWrapper = ({
       config={config}
       userContext={userContext}
       consentStatus={consentStatus}
+      userConsentVersion={userConsentVersion}
     >
       {children}
     </ConsentProvider>

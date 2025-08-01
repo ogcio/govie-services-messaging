@@ -84,6 +84,7 @@ export const ConsentModal = () => {
         accept,
         subject: config.subject,
         preferredLanguage,
+        versionId: config.content.version.id, // Store the version being consented to
       })
 
       setIsLoading({
