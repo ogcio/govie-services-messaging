@@ -9,7 +9,7 @@ import { ConsentBanner } from "@/components/consent/ConsentBanner"
 import { MessagingConsentWrapper } from "@/components/consent/MessagingConsentWrapper"
 import {
   getAndMaybeSetConsentStatus,
-  getConsentContent,
+  getConsentStatementContent,
 } from "@/components/consent/messaging-consent-api"
 import {
   BodyContainer,
@@ -39,14 +39,15 @@ export default async ({
   const { profile } = await requireProfile({
     userId: user.id,
   })
+  const consentStatementContent = await getConsentStatementContent({
+    locale: params.locale,
+  })
   const { consentStatus, isConsentEnabled } = await getAndMaybeSetConsentStatus(
     {
       profile,
+      latestConsentStatementId: consentStatementContent.version.id,
     },
   )
-  const consentContent = await getConsentContent({
-    locale: params.locale,
-  })
 
   // Extract user's consent version for comparison with latest version
   // TODO: Update profile structure to include consent version tracking
@@ -81,7 +82,7 @@ export default async ({
                   }}
                   consentStatus={consentStatus}
                   isConsentEnabled={isConsentEnabled}
-                  consentContent={consentContent}
+                  consentStatementContent={consentStatementContent}
                   userConsentVersion={userConsentVersion}
                 >
                   <ToastProvider />

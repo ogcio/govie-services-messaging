@@ -57,7 +57,7 @@ export const ConsentProvider = ({
     consentStatus,
     searchParams,
     userConsentVersion,
-    latestConsentVersion: config.content.version.id,
+    latestConsentStatementId: config.content.version.id,
   })
 
   const [isConsentModalOpen, setIsConsentModalOpen] = useState(shouldShowModal)

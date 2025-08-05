@@ -2,7 +2,11 @@
 
 import { ConsentProvider } from "./ConsentProvider"
 import { useMessagingConsentConfig } from "./messaging-consent-config"
-import type { ConsentContent, ConsentStatus, ConsentUserContext } from "./types"
+import type {
+  ConsentStatementContent,
+  ConsentStatus,
+  ConsentUserContext,
+} from "./types"
 
 /**
  * Wrapper component that creates messaging-specific consent configuration
@@ -13,18 +17,18 @@ export const MessagingConsentWrapper = ({
   userContext,
   consentStatus,
   isConsentEnabled,
-  consentContent,
+  consentStatementContent,
   userConsentVersion,
 }: {
   children: React.ReactNode
   userContext: ConsentUserContext
   consentStatus: ConsentStatus
   isConsentEnabled: boolean
-  consentContent: ConsentContent
+  consentStatementContent: ConsentStatementContent
   userConsentVersion?: string // Version ID the user consented to
 }) => {
   const config = useMessagingConsentConfig({
-    content: consentContent,
+    content: consentStatementContent,
     isConsentEnabled,
   })
 

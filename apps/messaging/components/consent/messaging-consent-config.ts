@@ -6,7 +6,7 @@ import type {
   ConsentAction,
   ConsentAnalyticsTracker,
   ConsentConfig,
-  ConsentContent,
+  ConsentStatementContent,
   ConsentUserContext,
 } from "./types"
 import { ConsentStatuses } from "./types"
@@ -19,7 +19,7 @@ export const createMessagingConsentConfig = ({
   content,
   isConsentEnabled,
 }: {
-  content: ConsentContent
+  content: ConsentStatementContent
   isConsentEnabled: boolean
 }): ConsentConfig => {
   return {
@@ -38,7 +38,7 @@ export const createMessagingConsentConfig = ({
       consentStatus,
       searchParams,
       userConsentVersion,
-      latestConsentVersion,
+      latestConsentStatementId,
     }) => {
       // 1. Feature flag check first
       if (!isConsentEnabled) return false
@@ -56,7 +56,7 @@ export const createMessagingConsentConfig = ({
       // (only enforce version check when version tracking is implemented)
       const hasValidVersion =
         userConsentVersion === undefined ||
-        userConsentVersion === latestConsentVersion
+        userConsentVersion === latestConsentStatementId
 
       // 5. Force show parameter check
       const shouldForceShowModal = searchParams.get("force-consent") === "1"
@@ -65,7 +65,8 @@ export const createMessagingConsentConfig = ({
       return !hasValidConsent || !hasValidVersion || shouldForceShowModal
     },
 
-    api: createMessagingConsentAPI(),
+    api: (latestConsentStatementId: string) =>
+      createMessagingConsentAPI(latestConsentStatementId),
 
     analytics: {
       trackEvent: (_event) => {
@@ -95,7 +96,7 @@ export const useMessagingConsentConfig = ({
   content,
   isConsentEnabled,
 }: {
-  content: ConsentContent
+  content: ConsentStatementContent
   isConsentEnabled: boolean
 }): ConsentConfig => {
   const analytics = useAnalytics()
@@ -148,7 +149,7 @@ export const useMessagingConsentConfig = ({
  * Helper to create sample content structure for testing/development
  * In production, this would come from the backend
  */
-export const createSampleConsentContent = (): ConsentContent => ({
+export const createSampleConsentContent = (): ConsentStatementContent => ({
   // Sample version data for development
   version: {
     id: "messaging-consent-v1.0.0",

@@ -80,11 +80,11 @@ export const ConsentModal = () => {
     analyticsTracker?.trackConsentDecision(action)
 
     try {
-      const result = await api.submitConsent({
+      const apiInstance = api(config.content.version.id)
+      const result = await apiInstance.submitConsent({
         accept,
         subject: config.subject,
         preferredLanguage,
-        versionId: config.content.version.id, // Store the version being consented to
       })
 
       setIsLoading({

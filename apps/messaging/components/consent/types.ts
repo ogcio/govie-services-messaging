@@ -16,22 +16,24 @@ export interface ConsentStatementTranslation {
   id: string
   consentStatementId: string
   language: string
-  title?: string
+  title: string | null
   bodyTop: string[]
   bodyList: string[]
   bodyBottom: string[]
   bodySmall: string[]
-  bodyFooter?: string
+  bodyFooter: string | null
   bodyLinks: Record<string, string> // Dynamic links from backend (tc, pp, etc.)
   createdAt: string
 }
+
+export type ConsentStatementLanguages = "en" | "ga"
 
 export interface ConsentStatementData {
   id: string
   subject: string
   version: number
   createdAt: string
-  translations: Record<string, ConsentStatementTranslation> // "en", "ga", etc.
+  translations: Record<ConsentStatementLanguages, ConsentStatementTranslation> // "en", "ga", etc.
 }
 
 export interface ConsentStatementResponse {
@@ -39,7 +41,7 @@ export interface ConsentStatementResponse {
 }
 
 // Frontend content structure (transformed from backend)
-export interface ConsentContent {
+export interface ConsentStatementContent {
   // Version tracking for consent updates
   version: {
     id: string
@@ -84,11 +86,11 @@ export interface ConsentResult {
 }
 
 export interface ConsentAPI {
+  readonly consentStatementId: string
   submitConsent(params: {
     accept: boolean
     subject: string
     preferredLanguage?: string
-    versionId?: string // Version ID of the consent being accepted/declined
   }): Promise<ConsentResult>
   setConsentToPending(subject: string): Promise<ConsentResult>
 }
@@ -127,14 +129,14 @@ export interface ConsentModalVisibilityParams {
   searchParams: URLSearchParams
   // Version tracking for checking if user needs to re-consent
   userConsentVersion?: string // Version ID the user previously consented to
-  latestConsentVersion: string // Latest version ID from API
+  latestConsentStatementId: string // Latest version ID from API
 }
 
 export interface ConsentConfig {
   subject: string
 
   // Content (from backend) - now includes links
-  content: ConsentContent
+  content: ConsentStatementContent
 
   // User context configuration
   userContext: {
@@ -145,7 +147,7 @@ export interface ConsentConfig {
   shouldShowModal: (params: ConsentModalVisibilityParams) => boolean
 
   // API integration
-  api: ConsentAPI
+  api: (latestConsentStatementId: string) => ConsentAPI
 
   // Analytics (optional)
   analytics?: ConsentAnalytics

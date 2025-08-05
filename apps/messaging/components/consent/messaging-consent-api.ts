@@ -9,9 +9,9 @@ import { BBClients } from "@/utils/building-blocks-sdk"
 import { buildServerUrl } from "@/utils/url-utils.server"
 import { CONSENT_ENABLED_FLAG, CONSENT_SUBJECT } from "./const"
 import type {
-  ConsentContent,
   ConsentResult,
-  ConsentStatementResponse,
+  ConsentStatementContent,
+  ConsentStatementData,
   ConsentStatus,
 } from "./types"
 import { ConsentStatuses } from "./types"
@@ -23,23 +23,18 @@ export async function submitConsent({
   accept,
   subject,
   preferredLanguage,
-  versionId,
+  consentStatementId,
 }: {
   accept: boolean
   subject: typeof CONSENT_SUBJECT
   preferredLanguage?: string
-  versionId?: string // Version ID of the consent being accepted/declined
+  consentStatementId: string // Version ID of the consent being accepted/declined
 }): Promise<ConsentResult> {
-  // Log version for development until SDK supports it
-  if (versionId) {
-    console.log(`Submitting consent for version: ${versionId}`)
-  }
-
-  const profile = await BBClients.getProfileClient().citizen.submitConsent({
+  const citizenClient = BBClients.getProfileClient().citizen
+  const profile = await citizenClient.submitConsent({
     status: accept ? ConsentStatuses.OptedIn : ConsentStatuses.OptedOut,
     subject,
-    // TODO: Update Building Blocks SDK to support version tracking
-    // versionId, // Store which version the user consented to
+    consentStatementId,
   })
 
   if (profile?.error) {
@@ -59,10 +54,14 @@ export async function submitConsent({
  */
 export async function setConsentToPending(
   subject: typeof CONSENT_SUBJECT = CONSENT_SUBJECT,
+  consentStatementId: string,
 ): Promise<ConsentResult> {
-  const profile = await BBClients.getProfileClient().citizen.submitConsent({
+  const citizenClient = BBClients.getProfileClient().citizen
+
+  const profile = await citizenClient.submitConsent({
     status: ConsentStatuses.Pending,
     subject,
+    consentStatementId,
   })
 
   if (profile?.error) {
@@ -77,12 +76,21 @@ export async function setConsentToPending(
  */
 export async function getAndMaybeSetConsentStatus({
   profile,
+  latestConsentStatementId,
 }: {
   profile: ProfilePayload
-}): Promise<{
-  consentStatus: ConsentStatus
-  isConsentEnabled: boolean
-}> {
+  latestConsentStatementId: string
+}): Promise<
+  | {
+      consentStatus: ConsentStatus
+      isConsentEnabled: false
+    }
+  | {
+      consentStatus: ConsentStatus
+      isConsentEnabled: true
+      userConsentStatementId: string | null
+    }
+> {
   const logger = getServerLogger()
   let isConsentEnabled = false
   try {
@@ -106,125 +114,52 @@ export async function getAndMaybeSetConsentStatus({
   }
   // Consent: if the profile has no consent status or a consent status of undefined
   // for the messaging service, set the consent status to pending
+  const profileConsentStatus = profile.consentStatuses?.[CONSENT_SUBJECT]
   const consentStatus =
-    profile.consentStatuses?.[CONSENT_SUBJECT] ?? ConsentStatuses.Undefined
+    profileConsentStatus?.status ?? ConsentStatuses.Undefined
   if (consentStatus === ConsentStatuses.Undefined) {
-    const { error } = await setConsentToPending()
+    const { error } = await setConsentToPending(
+      CONSENT_SUBJECT,
+      latestConsentStatementId,
+    )
 
     return {
       consentStatus: error
         ? ConsentStatuses.Undefined
         : ConsentStatuses.Pending,
       isConsentEnabled,
+      userConsentStatementId:
+        profileConsentStatus?.consent_statement_id ?? null,
     }
   }
 
   return {
     consentStatus,
     isConsentEnabled,
+    userConsentStatementId: profileConsentStatus?.consent_statement_id ?? null,
   }
 }
 
 /**
  * Server action to fetch consent content from the API
  */
-export async function getConsentContent({
+export async function getConsentStatementContent({
   subject = CONSENT_SUBJECT,
   locale = LANG_EN,
 }: {
   subject?: typeof CONSENT_SUBJECT
   locale?: string
-} = {}): Promise<ConsentContent> {
+} = {}): Promise<ConsentStatementContent> {
   try {
-    // TODO: Replace with actual API call to fetch consent content
-    // const response: ConsentStatementResponse = await BBClients.getConsentClient().getContent({
-    //   subject,
-    //   locale,
-    // })
-
-    // For now, create mock backend response to test transformation
-    // In production, this would be:
-    // if (response.error) {
-    //   console.error("Failed to fetch consent content:", response.error)
-    //   return getFallbackContent(locale)
-    // }
-    // return transformBackendResponse(response.data, locale)
-
-    // Use the subject parameter to show it's intended for future API calls
-    console.log(
-      `Fetching consent content for subject: ${subject}, locale: ${locale}`,
-    )
-
-    // Create mock backend response to test transformation logic
-    const mockBackendResponse: ConsentStatementResponse = {
-      data: {
-        id: "messaging-consent-v1.0.0",
-        subject: CONSENT_SUBJECT,
-        version: 1,
-        createdAt: new Date().toISOString(),
-        translations: {
-          en: {
-            id: "en-translation",
-            consentStatementId: "messaging-consent-v1.0.0",
-            language: "en",
-            title: "Welcome to MessagingIE",
-            bodyTop: [
-              "MessagingIE provides you with a safe and secure access to letters, documents, and messages from Public Sector Bodies (PSBs).",
-              "Before you start using MessagingIE, we need your consent for the following:",
-            ],
-            bodyList: [
-              "To allow Public Sector Bodies to send messages to you where they are required or permitted to give information to you in writing",
-              "To notify you of new messages sent to you through MessagingIE",
-            ],
-            bodyBottom: [
-              "Please note, messages sent to you through MessagingIE may contain personal data. In some cases, special categories of personal data.",
-            ],
-            bodySmall: [
-              "If you Accept, you will be receiving secure communications from PSBs via MessagingIE.",
-              "If you Decline, you will not receive any new messages, but you may still view previous messages already delivered. PSBs will no longer communicate with you through MessagingIE, but may contact you through other means.",
-            ],
-            bodyFooter:
-              "Please read our <tc>Terms and Conditions</tc> and <pp>Privacy Notice</pp>.",
-            bodyLinks: {
-              tc: "https://www.gov.ie/terms",
-              pp: "https://www.gov.ie/privacy",
-            },
-            createdAt: new Date().toISOString(),
-          },
-          ga: {
-            id: "ga-translation",
-            consentStatementId: "messaging-consent-v1.0.0",
-            language: "ga",
-            title: "Táimid ag fáilte duit le MessagingIE",
-            bodyTop: [
-              "MessagingIE tusa a fháilte le teachtaireachtaí sa bhunachar sonraí (PSBs).",
-              "Nuair a thógann tú teachtaireachtaí le MessagingIE, ní mór duit <b>córas</b> leis an teachtaireachtaí seo.",
-            ],
-            bodyList: [
-              "Chun teachtaireacht a sheoladh, ní mór duit teimpléad a chruthú ar dtús nó ceann a roghnú ón roghanna thíos. Mura bhfuil aon teimpléid cruthaithe, téigh chuig an gcuid <href>Teimpléidí Teachtaireachtaí</href> chun tús a chur leis.",
-              "Roghnaigh an cineál teachtaireachta atá uait a sheoladh",
-            ],
-            bodyBottom: [
-              "Please note, messages sent to you through MessagingIE may contain personal data. In some cases, special categories of personal data.",
-            ],
-            bodySmall: [
-              "Má tá tú ag córas, beidh teachtaireachtaí a sheoladh le MessagingIE.",
-              "Má tá tú ag córas, ní bheidh teachtaireachtaí a sheoladh le MessagingIE. Ní bheidh teachtaireachtaí a sheoladh le MessagingIE, ach beidh teachtaireachtaí a sheoladh leis an ríomhphost a phostáil ar do phróifíl.",
-            ],
-            bodyFooter:
-              "Please read our <tc>Terms and Conditions</tc> and <pp>Privacy Notice</pp>.",
-            bodyLinks: {
-              tc: "https://www.gov.ie/terms",
-              pp: "https://www.gov.ie/privacy",
-            },
-            createdAt: new Date().toISOString(),
-          },
-        },
-      },
+    const response =
+      await BBClients.getProfileClient().citizen.getLatestConsentStatement({
+        subject,
+      })
+    if (response.error || !response.data) {
+      return getFallbackContent()
     }
-
     // Use the transformation function to convert backend response to frontend format
-    return await transformBackendResponse(mockBackendResponse.data, locale)
+    return await transformBackendResponse(response.data.data, locale)
   } catch (error) {
     console.error("Error fetching consent content:", error)
     // Return fallback content if API fails
@@ -236,9 +171,9 @@ export async function getConsentContent({
  * Transform backend API response to frontend content structure
  */
 async function transformBackendResponse(
-  data: ConsentStatementResponse["data"],
+  data: ConsentStatementData,
   locale: string,
-): Promise<ConsentContent> {
+): Promise<ConsentStatementContent> {
   const translation = data.translations[locale] || data.translations[LANG_EN]
   const t = await getTranslations("consent")
 
@@ -275,7 +210,7 @@ async function transformBackendResponse(
 /**
  * Fallback content generator (will be replaced by API response)
  */
-async function getFallbackContent(): Promise<ConsentContent> {
+async function getFallbackContent(): Promise<ConsentStatementContent> {
   const t = await getTranslations("consent")
 
   return {
