@@ -18,14 +18,14 @@ export const MessagingConsentWrapper = ({
   consentStatus,
   isConsentEnabled,
   consentStatementContent,
-  userConsentVersion,
+  userConsentStatementId,
 }: {
   children: React.ReactNode
   userContext: ConsentUserContext
   consentStatus: ConsentStatus
   isConsentEnabled: boolean
   consentStatementContent: ConsentStatementContent
-  userConsentVersion?: string // Version ID the user consented to
+  userConsentStatementId: string | null
 }) => {
   const config = useMessagingConsentConfig({
     content: consentStatementContent,
@@ -37,7 +37,7 @@ export const MessagingConsentWrapper = ({
       config={config}
       userContext={userContext}
       consentStatus={consentStatus}
-      userConsentVersion={userConsentVersion}
+      userConsentStatementId={userConsentStatementId}
     >
       {children}
     </ConsentProvider>

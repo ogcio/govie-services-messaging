@@ -37,7 +37,7 @@ export const createMessagingConsentConfig = ({
       userContext,
       consentStatus,
       searchParams,
-      userConsentVersion,
+      userConsentStatementId,
       latestConsentStatementId,
     }) => {
       // 1. Feature flag check first
@@ -55,8 +55,8 @@ export const createMessagingConsentConfig = ({
       // If userConsentVersion is undefined, treat as valid for backward compatibility
       // (only enforce version check when version tracking is implemented)
       const hasValidVersion =
-        userConsentVersion === undefined ||
-        userConsentVersion === latestConsentStatementId
+        userConsentStatementId === undefined ||
+        userConsentStatementId === latestConsentStatementId
 
       // 5. Force show parameter check
       const shouldForceShowModal = searchParams.get("force-consent") === "1"

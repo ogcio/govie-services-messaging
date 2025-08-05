@@ -128,7 +128,7 @@ export interface ConsentModalVisibilityParams {
   consentStatus: ConsentStatus
   searchParams: URLSearchParams
   // Version tracking for checking if user needs to re-consent
-  userConsentVersion?: string // Version ID the user previously consented to
+  userConsentStatementId: string | null // Version ID the user previously consented to
   latestConsentStatementId: string // Latest version ID from API
 }
 

@@ -84,6 +84,7 @@ export async function getAndMaybeSetConsentStatus({
   | {
       consentStatus: ConsentStatus
       isConsentEnabled: false
+      userConsentStatementId: null
     }
   | {
       consentStatus: ConsentStatus
@@ -110,6 +111,7 @@ export async function getAndMaybeSetConsentStatus({
     return {
       consentStatus: ConsentStatuses.Undefined,
       isConsentEnabled,
+      userConsentStatementId: null,
     }
   }
   // Consent: if the profile has no consent status or a consent status of undefined
@@ -122,14 +124,18 @@ export async function getAndMaybeSetConsentStatus({
       CONSENT_SUBJECT,
       latestConsentStatementId,
     )
-
+    if (error) {
+      return {
+        consentStatus: ConsentStatuses.Undefined,
+        isConsentEnabled,
+        userConsentStatementId:
+          profileConsentStatus?.consent_statement_id ?? null,
+      }
+    }
     return {
-      consentStatus: error
-        ? ConsentStatuses.Undefined
-        : ConsentStatuses.Pending,
+      consentStatus: ConsentStatuses.Pending,
       isConsentEnabled,
-      userConsentStatementId:
-        profileConsentStatus?.consent_statement_id ?? null,
+      userConsentStatementId: latestConsentStatementId,
     }
   }
 

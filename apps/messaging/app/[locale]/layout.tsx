@@ -42,17 +42,12 @@ export default async ({
   const consentStatementContent = await getConsentStatementContent({
     locale: params.locale,
   })
-  const { consentStatus, isConsentEnabled } = await getAndMaybeSetConsentStatus(
-    {
+  const { consentStatus, isConsentEnabled, userConsentStatementId } =
+    await getAndMaybeSetConsentStatus({
       profile,
       latestConsentStatementId: consentStatementContent.version.id,
-    },
-  )
+    })
 
-  // Extract user's consent version for comparison with latest version
-  // TODO: Update profile structure to include consent version tracking
-  // For now, assume no version history (undefined = treat as needs update)
-  const userConsentVersion: string | undefined = undefined
   const t = await getTranslations("home")
   const config = getCachedConfig()()
 
@@ -83,7 +78,7 @@ export default async ({
                   consentStatus={consentStatus}
                   isConsentEnabled={isConsentEnabled}
                   consentStatementContent={consentStatementContent}
-                  userConsentVersion={userConsentVersion}
+                  userConsentStatementId={userConsentStatementId}
                 >
                   <ToastProvider />
                   <PageHeader

@@ -40,14 +40,14 @@ export const ConsentProvider = ({
   config,
   userContext,
   consentStatus,
-  userConsentVersion,
+  userConsentStatementId,
   events,
 }: {
   children: React.ReactNode
   config: ConsentConfig
   userContext: ConsentUserContext
   consentStatus: ConsentStatus
-  userConsentVersion?: string // Version ID the user consented to
+  userConsentStatementId: string | null
   events?: ConsentEvents
 }) => {
   const searchParams = useSearchParams()
@@ -56,7 +56,7 @@ export const ConsentProvider = ({
     userContext,
     consentStatus,
     searchParams,
-    userConsentVersion,
+    userConsentStatementId: userConsentStatementId,
     latestConsentStatementId: config.content.version.id,
   })
 
