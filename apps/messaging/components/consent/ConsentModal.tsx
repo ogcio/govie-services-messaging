@@ -207,7 +207,11 @@ export const ConsentModal = () => {
             </Paragraph>
           ))}
           {content.listItems.length > 0 && (
-            <List type='bullet' items={content.listItems} />
+            <List
+              type='bullet'
+              items={content.listItems}
+              data-testid='consent-list'
+            />
           )}
 
           {content.bodyBottom && content.bodyBottom.length > 0 && (
@@ -216,7 +220,11 @@ export const ConsentModal = () => {
 
           {content.infoAlert && (
             <Alert variant='info' title={content.infoAlert.title}>
-              <List className='gi-text-sm' items={content.infoAlert.items} />
+              <List
+                className='gi-text-sm'
+                items={content.infoAlert.items}
+                data-testid='info-alert-list'
+              />
             </Alert>
           )}
           <Paragraph style={{ maxWidth: "unset" }} size='sm'>
@@ -228,20 +236,22 @@ export const ConsentModal = () => {
       </ModalBody>
       <ModalFooter>
         <Button
+          key='decline-button'
           variant='secondary'
           disabled={isGlobalLoading || !hasScrolledToBottom}
           onClick={() => doHandleConsent(false)}
         >
           {content.buttons.decline}
-          {isLoading.decline && <Spinner />}
+          {isLoading.decline && <Spinner key='decline-spinner' />}
         </Button>
         <Button
+          key='accept-button'
           variant='primary'
           disabled={isGlobalLoading || !hasScrolledToBottom}
           onClick={() => doHandleConsent(true)}
         >
           {content.buttons.accept}
-          {isLoading.accept && <Spinner />}
+          {isLoading.accept && <Spinner key='accept-spinner' />}
         </Button>
       </ModalFooter>
     </ModalWrapper>
