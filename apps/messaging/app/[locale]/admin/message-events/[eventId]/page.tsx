@@ -45,19 +45,6 @@ export default async (props: {
           </Paragraph>
           <Paragraph>{subject}</Paragraph>
         </Stack>
-        <div>
-          <Heading as='h2' size='xs'>
-            {t("heading.plainText")}
-          </Heading>
-          <Paragraph whitespace='break-spaces'>{plainText}</Paragraph>
-        </div>
-      </div>
-
-      <div>
-        <Heading as='h2' size='xs'>
-          {t("heading.richText")}
-        </Heading>
-        <Paragraph whitespace='break-spaces'>{richText}</Paragraph>
       </div>
 
       <Table>
