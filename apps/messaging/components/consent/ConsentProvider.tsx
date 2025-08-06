@@ -5,7 +5,6 @@ import {
   createContext,
   type Dispatch,
   type SetStateAction,
-  Suspense,
   useContext,
   useState,
 } from "react"
@@ -72,12 +71,13 @@ export const ConsentProvider = ({
   }
 
   return (
-    <Suspense>
-      <ConsentContext.Provider value={contextValue}>
-        <ConsentModal />
-        {children}
-      </ConsentContext.Provider>
-    </Suspense>
+    // Had to comment out suspense because it was causing rendering issues after login
+    // <Suspense>
+    <ConsentContext.Provider value={contextValue}>
+      <ConsentModal />
+      {children}
+    </ConsentContext.Provider>
+    // </Suspense>
   )
 }
 
