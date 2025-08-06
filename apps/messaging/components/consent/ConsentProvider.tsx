@@ -9,59 +9,71 @@ import {
   useContext,
   useState,
 } from "react"
-import { useFeatureFlags } from "@/components/FeatureFlagsProvider"
-import { LANG_EN, type LANG_GA } from "@/types/shared"
 import { ConsentModal } from "./ConsentModal"
-import { type ConsentStatus, ConsentStatuses } from "./types"
+import {
+  type ConsentConfig,
+  type ConsentEvents,
+  type ConsentStatus,
+  ConsentStatuses,
+  type ConsentUserContext,
+} from "./types"
 
-const ConsentContext = createContext<{
+interface ConsentContextValue {
   isConsentModalOpen: boolean
   setIsConsentModalOpen: Dispatch<SetStateAction<boolean>>
-  preferredLanguage: typeof LANG_EN | typeof LANG_GA
+  config: ConsentConfig
+  userContext: ConsentUserContext
   isOptedOut: boolean
-}>({
+  events?: ConsentEvents
+}
+
+const ConsentContext = createContext<ConsentContextValue>({
   isConsentModalOpen: false,
   setIsConsentModalOpen: () => {},
-  preferredLanguage: LANG_EN,
+  config: {} as ConsentConfig,
+  userContext: {} as ConsentUserContext,
   isOptedOut: false,
 })
 
 export const ConsentProvider = ({
   children,
-  isPublicServant,
+  config,
+  userContext,
   consentStatus,
-  preferredLanguage,
+  userConsentStatementId,
+  events,
 }: {
   children: React.ReactNode
-  isPublicServant: boolean
+  config: ConsentConfig
+  userContext: ConsentUserContext
   consentStatus: ConsentStatus
-  preferredLanguage: typeof LANG_EN | typeof LANG_GA
+  userConsentStatementId: string | null
+  events?: ConsentEvents
 }) => {
-  const { isConsentEnabled } = useFeatureFlags()
-  const hasValidConsent =
-    consentStatus === ConsentStatuses.OptedIn ||
-    consentStatus === ConsentStatuses.OptedOut
   const searchParams = useSearchParams()
-  const shouldForceShowModal = searchParams.get("force-consent") === "1"
-  const shouldShowModalToCitizen =
-    !isPublicServant &&
-    isConsentEnabled &&
-    (!hasValidConsent || shouldForceShowModal)
 
-  const [isConsentModalOpen, setIsConsentModalOpen] = useState(
-    shouldShowModalToCitizen,
-  )
+  const shouldShowModal = config.shouldShowModal({
+    userContext,
+    consentStatus,
+    searchParams,
+    userConsentStatementId: userConsentStatementId,
+    latestConsentStatementId: config.content.version.id,
+  })
+
+  const [isConsentModalOpen, setIsConsentModalOpen] = useState(shouldShowModal)
+
+  const contextValue: ConsentContextValue = {
+    isConsentModalOpen,
+    setIsConsentModalOpen,
+    config,
+    userContext,
+    isOptedOut: consentStatus === ConsentStatuses.OptedOut,
+    events,
+  }
 
   return (
     <Suspense>
-      <ConsentContext.Provider
-        value={{
-          isConsentModalOpen,
-          setIsConsentModalOpen,
-          preferredLanguage,
-          isOptedOut: consentStatus === ConsentStatuses.OptedOut,
-        }}
-      >
+      <ConsentContext.Provider value={contextValue}>
         <ConsentModal />
         {children}
       </ConsentContext.Provider>

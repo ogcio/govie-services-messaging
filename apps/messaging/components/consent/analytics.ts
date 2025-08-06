@@ -1,8 +1,8 @@
 export const CONSENT_CATEGORY = "consent"
 
 export const CONSENT_ACTIONS = {
-  ACCEPT: "accept",
-  DECLINE: "decline",
+  ACCEPT: "accept" as const,
+  DECLINE: "decline" as const,
 }
 
 export const ConsentAnalyticsEvent = ({

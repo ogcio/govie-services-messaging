@@ -14,24 +14,20 @@ import {
   Stack,
   toaster,
 } from "@govie-ds/react"
-import { useAnalytics } from "@ogcio/nextjs-analytics"
-import { useTranslations } from "next-intl"
-import { type ReactElement, useEffect, useRef, useState } from "react"
-import { handleConsent } from "@/app/[locale]/consent/actions"
-import { CONSENT_ACTIONS, ConsentAnalyticsEvent } from "./analytics"
+import { useEffect, useRef, useState } from "react"
+import { CONSENT_ACTIONS } from "./analytics"
 import { useConsent } from "./ConsentProvider"
-
-// TODO: handle these properly
-const footerLinks = {
-  tc: "https://www.gov.ie/en/privacy-and-data-protection/privacy-notices/privacy-notice-for-messagingie/",
-  privacy:
-    "https://www.gov.ie/en/privacy-and-data-protection/privacy-notices/privacy-notice-for-messagingie/",
-}
+import type { ConsentAction } from "./types"
 
 export const ConsentModal = () => {
-  const t = useTranslations()
-  const { isConsentModalOpen, setIsConsentModalOpen, preferredLanguage } =
-    useConsent()
+  const {
+    isConsentModalOpen,
+    setIsConsentModalOpen,
+    config,
+    userContext,
+    events,
+  } = useConsent()
+
   const [isLoading, setIsLoading] = useState({
     accept: false,
     decline: false,
@@ -40,7 +36,9 @@ export const ConsentModal = () => {
   const [error, setError] = useState<string | null>(null)
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
-  const analytics = useAnalytics()
+
+  const { content, analyticsTracker, api } = config
+  const preferredLanguage = config.userContext.getPreferredLanguage(userContext)
 
   // Set up intersection observer to track when user scrolls to bottom
   useEffect(() => {
@@ -73,47 +71,109 @@ export const ConsentModal = () => {
       accept,
       decline: !accept,
     })
-    const action = accept ? CONSENT_ACTIONS.ACCEPT : CONSENT_ACTIONS.DECLINE
-    analytics.trackEvent(
-      ConsentAnalyticsEvent({
-        name: "consent",
-        action,
-      }),
-    )
-    const result = await handleConsent({
-      accept,
-      preferredLanguage,
-    })
-    setIsLoading({
-      accept: false,
-      decline: false,
-    })
-    if (result?.error) {
-      // Note: a toaster won't be visible behind the modal overlay
-      setError(result.error.detail)
-      analytics.trackEvent(
-        ConsentAnalyticsEvent({
-          name: "consent-error",
-          action,
-        }),
+
+    const action: ConsentAction = accept
+      ? CONSENT_ACTIONS.ACCEPT
+      : CONSENT_ACTIONS.DECLINE
+
+    // Track analytics if configured
+    analyticsTracker?.trackConsentDecision(action)
+
+    try {
+      const apiInstance = api(config.content.version.id)
+      const result = await apiInstance.submitConsent({
+        accept,
+        subject: config.subject,
+        preferredLanguage,
+      })
+
+      setIsLoading({
+        accept: false,
+        decline: false,
+      })
+
+      if (result?.error) {
+        // Note: a toaster won't be visible behind the modal overlay
+        setError(result.error.detail)
+
+        analyticsTracker?.trackConsentError(action)
+        events?.onConsentError?.(new Error(result.error.detail))
+        return
+      }
+
+      analyticsTracker?.trackConsentSuccess(action)
+
+      setIsConsentModalOpen(false)
+
+      // Call custom event handler if provided
+      events?.onConsentDecision?.(accept)
+
+      // Show success toast if configured
+      if (config.onConsentSuccess?.showToast !== false) {
+        toaster.create({
+          position: {
+            x: "right",
+            y: "top",
+          },
+          title: content.success.title,
+          description: content.success.message,
+          dismissible: true,
+          variant: "success",
+        })
+      }
+    } catch (error) {
+      setIsLoading({
+        accept: false,
+        decline: false,
+      })
+
+      const errorMessage =
+        error instanceof Error ? error.message : "An error occurred"
+      setError(errorMessage)
+      events?.onConsentError?.(
+        error instanceof Error ? error : new Error(errorMessage),
       )
-      return
     }
-    analytics.trackEvent(
-      ConsentAnalyticsEvent({
-        name: "consent-success",
-        action,
-      }),
-    )
-    setIsConsentModalOpen(false)
-    toaster.create({
-      position: {
-        x: "right",
-        y: "top",
-      },
-      title: t("consent.success.title"),
-      dismissible: true,
-      variant: "success",
+  }
+
+  const renderTextWithLinks = (text: string) => {
+    // Replace <tc>Terms and Conditions</tc> and <pp>Privacy Notice</pp> with actual links
+    let processedText = text
+
+    // Replace link placeholders with actual links
+    Object.entries(content.links).forEach(([key, url]) => {
+      const linkText =
+        key === "tc"
+          ? "Terms and Conditions"
+          : key === "pp"
+            ? "Privacy Notice"
+            : key
+
+      // Replace the entire tag including content: <tc>Terms and Conditions</tc>
+      const fullTag = `<${key}>${linkText}</${key}>`
+      const linkTag = `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`
+
+      processedText = processedText.replace(fullTag, linkTag)
+    })
+
+    // Split by HTML tags and render
+    const parts = processedText.split(/(<a[^>]*>.*?<\/a>)/g)
+    return parts.map((part, partIndex) => {
+      const linkMatch = part.match(/<a href="([^"]*)"[^>]*>(.*?)<\/a>/)
+
+      if (linkMatch) {
+        return (
+          <Link
+            key={`link-${partIndex}-${linkMatch[1]}`}
+            href={linkMatch[1]}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            {linkMatch[2]}
+          </Link>
+        )
+      }
+      return <span key={`text-${partIndex}-${part}`}>{part}</span>
     })
   }
 
@@ -123,58 +183,52 @@ export const ConsentModal = () => {
       isOpen={isConsentModalOpen}
       closeOnClick={false}
       closeOnOverlayClick={false}
-      onClose={() => setIsConsentModalOpen(false)}
+      onClose={() => {
+        setIsConsentModalOpen(false)
+        events?.onModalClose?.()
+      }}
     >
-      <ModalTitle>{t("consent.title")}</ModalTitle>
+      <ModalTitle>{content.title}</ModalTitle>
       <ModalBody>
         {/* Note: if we put this in the stack it will loose full-width */}
         {error && (
           <div className='gi-mb-4'>
-            <Alert variant='danger' title={t("consent.error.title")}>
-              <Paragraph>{t("consent.error.body")}</Paragraph>
+            <Alert variant='danger' title={content.error.title}>
+              <Paragraph>{content.error.message}</Paragraph>
             </Alert>
           </div>
         )}
         <Stack direction='column' gap={4}>
-          <Paragraph>
-            {t.rich("consent.body.top.0", {
-              b: (chunks) => <b>{chunks}</b>,
-            })}
-          </Paragraph>
-          <Paragraph>
-            {t.rich("consent.body.top.1", {
-              b: (chunks) => <b>{chunks}</b>,
-            })}
-          </Paragraph>
-          <List
-            type='bullet'
-            items={[t("consent.body.list.0"), t("consent.body.list.1")]}
-          />
-          <Paragraph>
-            {t.rich("consent.body.bottom", {
-              b: (chunks) => <b>{chunks}</b>,
-            })}
-          </Paragraph>
-          <Alert variant='info' title={t("consent.body.small.title")}>
+          {content.bodyParagraphs.map((paragraph, paragraphIndex) => (
+            <Paragraph
+              key={`paragraph-${paragraphIndex}-${paragraph.substring(0, 20)}`}
+            >
+              {paragraph}
+            </Paragraph>
+          ))}
+          {content.listItems.length > 0 && (
             <List
-              className='gi-text-sm'
-              items={[
-                t.rich("consent.body.small.0", {
-                  b: (chunks) => <b>{chunks}</b>,
-                }) as ReactElement,
-                t.rich("consent.body.small.1", {
-                  b: (chunks) => <b>{chunks}</b>,
-                }) as ReactElement,
-              ]}
+              type='bullet'
+              items={content.listItems}
+              data-testid='consent-list'
             />
-          </Alert>
+          )}
+
+          {content.bodyBottom && content.bodyBottom.length > 0 && (
+            <Paragraph>{content.bodyBottom.join(" ")}</Paragraph>
+          )}
+
+          {content.infoAlert && (
+            <Alert variant='info' title={content.infoAlert.title}>
+              <List
+                className='gi-text-sm'
+                items={content.infoAlert.items}
+                data-testid='info-alert-list'
+              />
+            </Alert>
+          )}
           <Paragraph style={{ maxWidth: "unset" }} size='sm'>
-            {t.rich("consent.body.footer", {
-              link1: (chunks) => <Link href={footerLinks.tc}>{chunks}</Link>,
-              link2: (chunks) => (
-                <Link href={footerLinks.privacy}>{chunks}</Link>
-              ),
-            })}
+            {renderTextWithLinks(content.footerText)}
           </Paragraph>
           {/* Invisible element to detect scroll to bottom */}
           <div ref={bottomRef} style={{ height: "1px" }} />
@@ -182,20 +236,22 @@ export const ConsentModal = () => {
       </ModalBody>
       <ModalFooter>
         <Button
+          key='decline-button'
           variant='secondary'
           disabled={isGlobalLoading || !hasScrolledToBottom}
           onClick={() => doHandleConsent(false)}
         >
-          {t("consent.button.decline")}
-          {isLoading.decline && <Spinner />}
+          {content.buttons.decline}
+          {isLoading.decline && <Spinner key='decline-spinner' />}
         </Button>
         <Button
+          key='accept-button'
           variant='primary'
           disabled={isGlobalLoading || !hasScrolledToBottom}
           onClick={() => doHandleConsent(true)}
         >
-          {t("consent.button.accept")}
-          {isLoading.accept && <Spinner />}
+          {content.buttons.accept}
+          {isLoading.accept && <Spinner key='accept-spinner' />}
         </Button>
       </ModalFooter>
     </ModalWrapper>
