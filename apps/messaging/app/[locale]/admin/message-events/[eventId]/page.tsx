@@ -21,7 +21,7 @@ export default async (props: {
   params: { eventId: string; locale: string }
 }) => {
   const t = await getTranslations("event")
-  const { recipient, subject, richText, plainText, messageEvents } =
+  const { recipient, subject, messageEvents } =
     await loader(props)
 
   const header = headers()
@@ -45,19 +45,6 @@ export default async (props: {
           </Paragraph>
           <Paragraph>{subject}</Paragraph>
         </Stack>
-        <div>
-          <Heading as='h2' size='xs'>
-            {t("heading.plainText")}
-          </Heading>
-          <Paragraph whitespace='break-spaces'>{plainText}</Paragraph>
-        </div>
-      </div>
-
-      <div>
-        <Heading as='h2' size='xs'>
-          {t("heading.richText")}
-        </Heading>
-        <Paragraph whitespace='break-spaces'>{richText}</Paragraph>
       </div>
 
       <Table>
