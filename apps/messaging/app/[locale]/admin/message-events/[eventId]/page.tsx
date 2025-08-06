@@ -21,7 +21,7 @@ export default async (props: {
   params: { eventId: string; locale: string }
 }) => {
   const t = await getTranslations("event")
-  const { recipient, subject, richText, plainText, messageEvents } =
+  const { recipient, subject, messageEvents } =
     await loader(props)
 
   const header = headers()
