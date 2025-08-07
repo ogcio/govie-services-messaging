@@ -21,8 +21,7 @@ export default async (props: {
   params: { eventId: string; locale: string }
 }) => {
   const t = await getTranslations("event")
-  const { recipient, subject, messageEvents } =
-    await loader(props)
+  const { recipient, subject, messageEvents } = await loader(props)
 
   const header = headers()
   const searchQuery = header.get(CustomHeaders.Search)

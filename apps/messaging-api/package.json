@@ -33,8 +33,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-sns": "^3.848.0",
-    "@cacheable/node-cache": "^1.6.0",
+    "@aws-sdk/client-sns": "^3.862.0",
+    "@cacheable/node-cache": "^1.6.1",
     "@fastify/autoload": "^6.3.1",
     "@fastify/env": "^5.0.2",
     "@fastify/postgres": "^6.0.2",
@@ -43,7 +43,7 @@
     "@fastify/swagger-ui": "^5.2.3",
     "@fastify/type-provider-typebox": "^5.2.0",
     "@fastify/under-pressure": "^9.0.3",
-    "@ogcio/api-auth": "^5.1.1",
+    "@ogcio/api-auth": "^5.1.2",
     "@ogcio/fastify-error-handler": "^5.2.1",
     "@ogcio/fastify-logging-wrapper": "^5.2.3",
     "@ogcio/o11y-sdk-node": "^0.2.0",
@@ -58,7 +58,8 @@
     "node-polyglot": "^2.6.0",
     "nodemailer": "^7.0.5",
     "pg": "^8.16.3",
-    "postgrator": "^8.0.0"
+    "postgrator": "^8.0.0",
+    "unleash-client": "^6.6.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.51.1",
