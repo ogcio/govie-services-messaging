@@ -15,6 +15,7 @@ import {
   processMessage,
 } from "../../../services/messages/message-service.js";
 import type { CreateMessageBody } from "../../../types/messages.js";
+import type { FeatureFlagsWrapper } from "../../../utils/feature-flags.js";
 import { utils } from "../../../utils/utils.js";
 import {
   DATABASE_TEST_URL_KEY,
@@ -25,7 +26,16 @@ import { getMockBaseLogger } from "../../test-server-builder.js";
 let pool: Pool;
 
 let schedulerWorks = true;
-
+const disabledFeatureFlags = {
+  isConsentFlagEnabled: (_context: unknown): boolean => {
+    return false;
+  },
+} as unknown as FeatureFlagsWrapper;
+const enabledFeatureFlags = {
+  isConsentFlagEnabled: (_context: unknown): boolean => {
+    return true;
+  },
+} as unknown as FeatureFlagsWrapper;
 type MessageId = string;
 async function insertMessage(
   recipientProfileId: string,
@@ -173,6 +183,7 @@ describe("Message Service", () => {
         sender,
         message,
         logger: getMockBaseLogger(),
+        featureFlagsWrapper: disabledFeatureFlags,
       });
 
       expect(output.messageId).toBeDefined();
@@ -212,6 +223,7 @@ describe("Message Service", () => {
           },
         },
         logger: getMockBaseLogger(),
+        featureFlagsWrapper: disabledFeatureFlags,
       });
 
       expect(output.messageId).toBeDefined();
@@ -246,6 +258,7 @@ describe("Message Service", () => {
           sender: { ...sender, id: notFoundProfileId },
           message,
           logger: getMockBaseLogger(),
+          featureFlagsWrapper: disabledFeatureFlags,
         }),
       ).rejects.toThrow(
         "Failed fetching user from profile sdk: user not found",
@@ -265,6 +278,7 @@ describe("Message Service", () => {
           },
           message,
           logger: getMockBaseLogger(),
+          featureFlagsWrapper: disabledFeatureFlags,
         }),
       ).rejects.toThrow("Message creation failed");
     });
@@ -279,6 +293,7 @@ describe("Message Service", () => {
           sender,
           message,
           logger: getMockBaseLogger(),
+          featureFlagsWrapper: disabledFeatureFlags,
         }),
       ).rejects.toThrow("Error scheduling messages");
     });
