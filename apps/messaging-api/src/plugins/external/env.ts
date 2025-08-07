@@ -25,7 +25,16 @@ export interface EnvSnsConfig {
   SNS_ALLOWED_ORGANIZATIONS: string | undefined;
 }
 
-export interface EnvConfig extends EnvDbConfig, EnvEmailConfig, EnvSnsConfig {
+interface FeatureFlagsConfig {
+  FEATURE_FLAGS_URL?: string;
+  FEATURE_FLAGS_TOKEN?: string;
+}
+
+export interface EnvConfig
+  extends EnvDbConfig,
+    EnvEmailConfig,
+    EnvSnsConfig,
+    FeatureFlagsConfig {
   PROFILE_BACKEND_URL: string;
   LOGTO_JWK_ENDPOINT: string;
   LOGTO_OIDC_ENDPOINT: string;
@@ -186,6 +195,14 @@ export const EnvKeys: Record<
     required: false,
   },
   WEBHOOK_URL_BASE: { type: "string", required: true },
+  FEATURE_FLAGS_URL: {
+    type: "string",
+    required: false,
+  },
+  FEATURE_FLAGS_TOKEN: {
+    type: "string",
+    required: false,
+  },
 };
 
 const allKeys = Object.keys(EnvKeys);

@@ -4,6 +4,7 @@ import type { FastifyBaseLogger } from "fastify";
 import type { Pool, PoolClient } from "pg";
 import type { CreateMessageBody, SenderUser } from "../../types/messages.js";
 import { getM2MSchedulerSdk } from "../../utils/authentication-factory.js";
+import type { FeatureFlagsWrapper } from "../../utils/feature-flags.js";
 import { utils } from "../../utils/utils.js";
 import { ProfileM2MSdkWrapper } from "../users/profile-m2m-sdk-wrapper.js";
 import type { GetProfileResponse } from "../users/profile-sdk-wrapper.js";
@@ -19,6 +20,7 @@ export class MessagesProcessor {
   async processMessage(params: {
     message: CreateMessageBody;
     senderUser: SenderUser;
+    featureFlagsWrapper: FeatureFlagsWrapper;
   }): Promise<{ jobId: string; userId: string; messageId: string }> {
     const { message, senderUser } = params;
     const { recipientProfile, senderProfile, senderApplication } =
@@ -153,6 +155,7 @@ export class MessagesProcessor {
   private async ensureParamsForSendingAreValid(params: {
     message: CreateMessageBody;
     senderUser: SenderUser;
+    featureFlagsWrapper: FeatureFlagsWrapper;
   }): Promise<
     | {
         recipientProfile: GetProfileResponse;
@@ -170,6 +173,7 @@ export class MessagesProcessor {
       recipientUserProfileId: message.recipientUserId,
       senderUser: senderUser.isM2MApplication ? undefined : senderUser,
       organizationId: senderUser.organizationId,
+      featureFlagsWrapper: params.featureFlagsWrapper,
     });
 
     // TODO: Optimise Check and restore
@@ -195,6 +199,7 @@ export class MessagesProcessor {
     recipientUserProfileId: string;
     senderUser?: SenderUser;
     organizationId: string;
+    featureFlagsWrapper: FeatureFlagsWrapper;
   }): Promise<{
     recipientProfile: GetProfileResponse;
     senderProfile?: GetProfileResponse;
@@ -203,21 +208,23 @@ export class MessagesProcessor {
       this.logger,
       params.organizationId,
     );
-    const recipientPromise = profileWrapper.getProfile(
+    const recipientProfile = await profileWrapper.getProfile(
       params.recipientUserProfileId,
     );
 
+    const isConsentEnabled =
+      await params.featureFlagsWrapper.isConsentFlagEnabled({
+        userId: params.recipientUserProfileId,
+      });
+    if (isConsentEnabled) {
+      profileWrapper.ensureUserConsented(recipientProfile.consentStatuses);
+    }
+
     if (!params.senderUser) {
-      const recipientProfile = await recipientPromise;
       return { recipientProfile };
     }
 
-    const senderPromise = profileWrapper.getProfile(params.senderUser.id);
-
-    const [recipientProfile, senderProfile] = await Promise.all([
-      recipientPromise,
-      senderPromise,
-    ]);
+    const senderProfile = await profileWrapper.getProfile(params.senderUser.id);
 
     return { recipientProfile, senderProfile };
   }

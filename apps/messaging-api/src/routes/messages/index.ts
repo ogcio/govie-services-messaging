@@ -240,6 +240,7 @@ export default async function messages(app: FastifyInstance) {
         logger: request.log,
         message: request.body,
         sender: senderUser,
+        featureFlagsWrapper: app.featureFlagsWrapper,
       });
 
       reply.statusCode = 201;

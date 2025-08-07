@@ -14,6 +14,7 @@ import type {
   AcceptedQueryBooleanValues,
   PaginationParams,
 } from "../../types/schemaDefinitions.js";
+import type { FeatureFlagsWrapper } from "../../utils/feature-flags.js";
 import { ProfilePersonalSdkWrapper } from "../users/profile-personal-sdk-wrapper.js";
 import { MessagesProcessor } from "./messages-processor.js";
 
@@ -127,12 +128,14 @@ export async function processMessage(params: {
   };
   message: CreateMessageBody;
   logger: FastifyBaseLogger;
+  featureFlagsWrapper: FeatureFlagsWrapper;
 }) {
   const messagesProcessor = new MessagesProcessor(params.pool, params.logger);
 
   return messagesProcessor.processMessage({
     message: params.message,
     senderUser: params.sender,
+    featureFlagsWrapper: params.featureFlagsWrapper,
   });
 }
 

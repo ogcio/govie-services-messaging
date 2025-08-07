@@ -8,6 +8,8 @@ import {
 } from "@ogcio/building-blocks-sdk";
 import type { FastifyBaseLogger } from "fastify";
 
+let featureFlags: BuildingBlocksSDK["featureFlags"] | undefined;
+
 type SetupSdks = DefinedServices<{
   services: {
     scheduler: {
@@ -258,4 +260,29 @@ export const getM2MSchedulerSdk = async (
   organizationId: string,
 ): Promise<BuildingBlocksSDK["scheduler"]> => {
   return loadM2MSdk(organizationId, logger).scheduler;
+};
+
+export const getFeatureFlagsClient = (ffConfig: {
+  url: string;
+  token: string;
+}): BuildingBlocksSDK["featureFlags"] => {
+  if (featureFlags) {
+    return featureFlags;
+  }
+
+  const fullSdk = getBuildingBlockSDK({
+    services: {
+      featureFlags: { baseUrl: ffConfig.url },
+    },
+    getTokenFn: async (serviceName: string) => {
+      if (serviceName !== "featureFlags") {
+        throw new Error("Wrong method invoked, featureFlags only");
+      }
+      return ffConfig.token;
+    },
+  });
+
+  featureFlags = fullSdk.featureFlags;
+
+  return featureFlags;
 };
