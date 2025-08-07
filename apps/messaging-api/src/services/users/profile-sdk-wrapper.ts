@@ -7,6 +7,8 @@ export type GetProfileResponse = Awaited<
   ReturnType<BuildingBlocksSDK["profile"]["getProfile"]>
 >["data"];
 
+export type ProfileConsentStatuses = GetProfileResponse["consentStatuses"];
+
 export type GetOrganisationResponse = Awaited<
   ReturnType<BuildingBlocksSDK["profile"]["getOrganisation"]>
 >["data"];
@@ -85,5 +87,23 @@ export abstract class ProfileSdkWrapper {
     cache.set(`${this.ORG_TRANSLATION_CACHE_KEY_PREFIX}_${id}`, organisation);
 
     return organisation;
+  }
+
+  ensureUserConsented(consentStatuses: ProfileConsentStatuses): void {
+    if (
+      consentStatuses === null ||
+      consentStatuses === undefined ||
+      !consentStatuses.messaging ||
+      !consentStatuses.messaging.status
+    ) {
+      return;
+    }
+
+    const optedOutStatuses = ["opted-out", "pending", "undefined"];
+    if (optedOutStatuses.includes(consentStatuses.messaging.status)) {
+      throw httpErrors.badRequest(
+        "User has not consented to receive messages. Please check the user's consent status.",
+      );
+    }
   }
 }
