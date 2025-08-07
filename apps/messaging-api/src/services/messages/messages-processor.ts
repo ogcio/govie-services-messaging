@@ -216,7 +216,6 @@ export class MessagesProcessor {
       await params.featureFlagsWrapper.isConsentFlagEnabled({
         userId: params.recipientUserProfileId,
       });
-
     if (isConsentEnabled) {
       profileWrapper.ensureUserConsented(recipientProfile.consentStatuses);
     }

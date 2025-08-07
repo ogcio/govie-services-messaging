@@ -100,6 +100,7 @@ export abstract class ProfileSdkWrapper {
     }
 
     const optedOutStatuses = ["opted-out", "pending", "undefined"];
+
     if (optedOutStatuses.includes(consentStatuses.messaging.status)) {
       throw httpErrors.badRequest(
         "User has not consented to receive messages. Please check the user's consent status.",

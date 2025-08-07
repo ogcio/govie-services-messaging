@@ -27,13 +27,13 @@ let pool: Pool;
 
 let schedulerWorks = true;
 const disabledFeatureFlags = {
-  isConsentFlagEnabled: (_context: unknown): boolean => {
-    return false;
+  isConsentFlagEnabled: (_context: unknown): Promise<boolean> => {
+    return Promise.resolve(false);
   },
 } as unknown as FeatureFlagsWrapper;
 const enabledFeatureFlags = {
-  isConsentFlagEnabled: (_context: unknown): boolean => {
-    return true;
+  isConsentFlagEnabled: (_context: unknown): Promise<boolean> => {
+    return Promise.resolve(true);
   },
 } as unknown as FeatureFlagsWrapper;
 type MessageId = string;
@@ -99,6 +99,8 @@ afterAll(async () => {
 describe("Message Service", () => {
   const notFoundProfileId = "not-found";
   const linkedProfileId = "linked-id";
+  const optedOutProfileId = "opted-out";
+  const optedInProfileId = "opted-in";
 
   vi.mock("../../../utils/authentication-factory.js", () => ({
     getM2MUploadSdk: vi.fn().mockResolvedValue({}),
@@ -141,13 +143,32 @@ describe("Message Service", () => {
     getM2MProfileSdk: vi.fn().mockResolvedValue({
       getProfile: vi.fn((id: string) => {
         const notFoundProfileId = "not-found";
-        if (id === notFoundProfileId) {
-          return { data: undefined, error: { detail: "user not found" } };
+        const optedOutProfileId = "opted-out";
+        const optedInProfileId = "opted-in";
+        switch (id) {
+          case optedOutProfileId:
+            return {
+              data: {
+                id,
+                email: `${id}@example.com`,
+                consentStatuses: { messaging: { status: "opted-out" } },
+              },
+            };
+          case optedInProfileId:
+            return {
+              data: {
+                id,
+                email: `${id}@example.com`,
+                consentStatuses: { messaging: { status: "opted-in" } },
+              },
+            };
+          case notFoundProfileId:
+            return { data: undefined, error: { detail: "user not found" } };
+          default:
+            return {
+              data: { id, email: `${id}@example.com` },
+            };
         }
-
-        return {
-          data: { id, email: `${id}@example.com` },
-        };
       }),
     }),
   }));
@@ -296,6 +317,55 @@ describe("Message Service", () => {
           featureFlagsWrapper: disabledFeatureFlags,
         }),
       ).rejects.toThrow("Error scheduling messages");
+    });
+
+    it("should handle opted out error during messaging processing", async () => {
+      const message = getMockMessage();
+      message.recipientUserId = optedOutProfileId;
+      await expect(
+        processMessage({
+          pool,
+          sender: { ...sender, id: sender.id },
+          message,
+          logger: getMockBaseLogger(),
+          featureFlagsWrapper: enabledFeatureFlags,
+        }),
+      ).rejects.toThrow(
+        "User has not consented to receive messages. Please check the user's consent status.",
+      );
+    });
+
+    it("should process messages successfully if user opted in", async () => {
+      schedulerWorks = true;
+      const message = getMockMessage();
+      message.recipientUserId = optedInProfileId;
+      const output = await processMessage({
+        pool,
+        sender,
+        message,
+        logger: getMockBaseLogger(),
+        featureFlagsWrapper: disabledFeatureFlags,
+      });
+
+      expect(output.messageId).toBeDefined();
+
+      const gotMessage = await getMessage({
+        pool,
+        userId: message.recipientUserId,
+        messageId: output.messageId,
+        loggedInUser: { userId: message.recipientUserId, accessToken: "123" },
+        hasOnboardingPermission: false,
+        logger: getMockBaseLogger(),
+      });
+
+      expect(gotMessage).toMatchObject({
+        subject: message.message.subject,
+        excerpt: message.message.excerpt,
+        plainText: message.message.plainText,
+        richText: message.message.richText,
+        threadName: message.message.threadName,
+        security: message.security,
+      });
     });
   });
 
